@@ -1,0 +1,201 @@
+id,name,title,company,seniority_tier,industry_vertical,icp_score,source,linkedin_url,email,company_size,funding_stage,persona_summary,context_hook,personalization_themes,confidence_flag,assigned_to,outreach_status,in_sequence
+1,Dr. Sreedhara Panicker Somanath,Chairman,Indian Space Research Organisation (ISRO),C-Suite,DeepTech/AI,4,scraped,,,,,,,,,,pending,False
+2,Shri Amitabh Kant,G20 Sherpa,Government of India,VP/Director,Government,2,scraped,,,,,,,,,,pending,False
+3,Ronnie Screwvala,Co-founder,upGrad & Swades Foundation,C-Suite,Edtech,4,scraped,,,,,,,,,,pending,False
+4,Bhavish Aggarwal,Founder,Ola,C-Suite,Mobility,4,scraped,,,,,,,,,,pending,False
+5,Dr. Rohini Srivathsa,CTO,Microsoft India and South Asia,C-Suite,DeepTech/AI,4,scraped,,,,,,,,,,pending,False
+6,Anil Agrawal,Member,Competition Commission of India,Manager/IC,Government,1,scraped,,,,,,,,,,pending,False
+7,Mabel Chacko,Co-founder & COO,Open Financial Technologies,C-Suite,Fintech,5,scraped,,,,,,,,,,pending,False
+8,Ashutosh Sharma,"Head of Growth Investments, India & Asia",Prosus Ventures,VP/Director,VC/PE,3,scraped,,,,,,,,,,pending,False
+9,Mukul Arora,Co-Managing Partner,Elevation Capital,VP/Director,VC/PE,3,scraped,,,,,,,,,,pending,False
+10,Nithin Kamath,Founder & CEO,Zerodha & Rainmatter,C-Suite,Fintech,5,scraped,,,,,,,,,,pending,False
+11,Naveen Tewari,Founder & CEO,InMobi Group,C-Suite,SaaS/B2B,5,scraped,,,,,,,,,,pending,False
+12,Rahul Chari,Founder & CTO,PhonePe,C-Suite,Fintech,5,scraped,,,,,,,,,,pending,False
+13,Lalit Keshre,Co-founder & CEO,Groww,C-Suite,Fintech,5,scraped,,,,,,,,,,pending,False
+14,Kunal Bahl,Co-founder,Snapdeal & Titan Capital,C-Suite,D2C/Ecomm,5,scraped,,,,,,,,,,pending,False
+15,Vishal Dhupar,"Managing Director, Asia South",NVIDIA,C-Suite,DeepTech/AI,4,scraped,,,,,,,,,,pending,False
+16,Ananth Narayanan,Founder & CEO,Mensa Brands,C-Suite,D2C/Ecomm,5,scraped,,,,,,,,,,pending,False
+17,Shashank Kumar,Managing Director and Co-founder,Razorpay,C-Suite,Fintech,5,scraped,,,,,,,,,,pending,False
+18,Siddarth Pai,"Founding Partner, CFO & ESG Officer",3one4 Capital,C-Suite,VC/PE,4,scraped,,,,,,,,,,pending,False
+19,Sharad Sanghi,Founder,Neysa,C-Suite,DeepTech/AI,4,scraped,,,,,,,,,,pending,False
+20,Subbu Iyer,CEO,Giggr Technologies,C-Suite,SaaS/B2B,5,scraped,,,,,,,,,,pending,False
+21,Arjun Mehta,Founder & CEO,FinStack Labs,C-Suite,Fintech,5,mock,,,,,,,,,,pending,False
+22,Priya Krishnamurthy,Co-founder & COO,LendGrid,C-Suite,Fintech,5,mock,,,,,,,,,,pending,False
+23,Saurabh Bhatia,Chief Product Officer,InsuranceFirst,C-Suite,Fintech,5,mock,,,,,,,,,,pending,False
+24,Deepika Nair,Founder,WealthBridge,C-Suite,Fintech,5,mock,,,,,,,,,,pending,False
+25,Karan Malhotra,CEO,PayFlow India,C-Suite,Fintech,5,mock,,,,,,,,,,pending,False
+26,Ananya Sharma,Co-founder & CTO,CreditSense,C-Suite,Fintech,5,mock,,,,,,,,,,pending,False
+27,Vikram Sinha,MD & CEO,LoanTap,C-Suite,Fintech,5,mock,,,,,,,,,,pending,False
+28,Ritika Gupta,Founder & CEO,Finova Capital,C-Suite,Fintech,5,mock,,,,,,,,,,pending,False
+29,Aditya Bansal,Chief Revenue Officer,RazorX,C-Suite,Fintech,5,mock,,,,,,,,,,pending,False
+30,Sneha Reddy,Co-founder,NeoBank One,C-Suite,Fintech,5,mock,,,,,,,,,,pending,False
+31,Nikhil Anand,VP of Sales,SaaSify,VP/Director,SaaS/B2B,4,mock,,,,,,,,,,pending,False
+32,Meghna Patel,Head of Growth,Chargebee,VP/Director,SaaS/B2B,4,mock,,,,,,,,,,pending,False
+33,Rohit Verma,Founder & CEO,Stackr.io,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+34,Ishaan Chopra,CTO,Quickwork,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+35,Pooja Kapoor,VP Engineering,Zomentum,VP/Director,SaaS/B2B,4,mock,,,,,,,,,,pending,False
+36,Alok Jain,Co-founder,Clientjoy,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+37,Kavya Rao,CEO,Sprinto,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+38,Rahul Suri,Director of Product,Rocketlane,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+39,Nandita Iyer,Chief Marketing Officer,Leadsquared,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+40,Sandeep Kumar,Founder,DemandBase India,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+41,Tanvi Shah,Founder & CEO,Plum Goodness,C-Suite,D2C/Ecomm,5,mock,,,,,,,,,,pending,False
+42,Ayush Tiwari,Co-founder,Bey Bee,C-Suite,D2C/Ecomm,5,mock,,,,,,,,,,pending,False
+43,Shruti Bose,CEO,Snitch Fashion,C-Suite,D2C/Ecomm,5,mock,,,,,,,,,,pending,False
+44,Mihir Khanna,Head of D2C,Mamaearth,VP/Director,D2C/Ecomm,4,mock,,,,,,,,,,pending,False
+45,Prerna Singh,Founder,Aastey,C-Suite,D2C/Ecomm,5,mock,,,,,,,,,,pending,False
+46,Vivek Sharma,VP Ecommerce,Nykaa,VP/Director,D2C/Ecomm,4,mock,,,,,,,,,,pending,False
+47,Rashmi Tomar,Co-founder & CMO,Blissclub,C-Suite,D2C/Ecomm,5,mock,,,,,,,,,,pending,False
+48,Ankit Garg,CEO,WOW Skin Science,C-Suite,D2C/Ecomm,5,mock,,,,,,,,,,pending,False
+49,Divya Menon,Founder,Pilgrim India,C-Suite,D2C/Ecomm,5,mock,,,,,,,,,,pending,False
+50,Siddharth Roy,Head of Growth,The Moms Co,VP/Director,D2C/Ecomm,4,mock,,,,,,,,,,pending,False
+51,Sunil Goyal,General Partner,YourNest Ventures,VP/Director,VC/PE,3,mock,,,,,,,,,,pending,False
+52,Aditi Avasthi,Partner,Blume Ventures,VP/Director,VC/PE,3,mock,,,,,,,,,,pending,False
+53,Ramakrishna Reddy,Managing Partner,Ideaspring Capital,VP/Director,VC/PE,3,mock,,,,,,,,,,pending,False
+54,Gauri Shankar,Principal,Matrix Partners India,VP/Director,VC/PE,3,mock,,,,,,,,,,pending,False
+55,Nitin Sharma,Founding Partner,Antler India,VP/Director,VC/PE,3,mock,,,,,,,,,,pending,False
+56,Roshni Mistry,Partner,Lightspeed India,VP/Director,VC/PE,3,mock,,,,,,,,,,pending,False
+57,Arun Natarajan,General Partner,Ventureintelligence,VP/Director,VC/PE,3,mock,,,,,,,,,,pending,False
+58,Shyam Menon,Investment Director,Stellaris Venture Partners,C-Suite,VC/PE,4,mock,,,,,,,,,,pending,False
+59,Ishita Dalmia,VP Investments,Omidyar Network India,VP/Director,VC/PE,3,mock,,,,,,,,,,pending,False
+60,Manish Agarwal,Partner,Nexus Venture Partners,VP/Director,VC/PE,3,mock,,,,,,,,,,pending,False
+61,Vijay Anand,Founder & CEO,Sarvam AI,C-Suite,DeepTech/AI,4,mock,,,,,,,,,,pending,False
+62,Poornima Rajan,CTO,Mad Street Den,C-Suite,DeepTech/AI,4,mock,,,,,,,,,,pending,False
+63,Aishwarya Srinivasan,Head of AI,IDFC First Bank,VP/Director,SaaS/B2B,4,mock,,,,,,,,,,pending,False
+64,Saurav Jha,Founder,Detect Technologies,C-Suite,DeepTech/AI,4,mock,,,,,,,,,,pending,False
+65,Lakshmi Balasubramanian,VP AI Research,Flipkart,VP/Director,SaaS/B2B,4,mock,,,,,,,,,,pending,False
+66,Rahul Dey,Co-founder & CEO,Haptik,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+67,Priya Mathur,Chief AI Officer,Mphasis,C-Suite,DeepTech/AI,4,mock,,,,,,,,,,pending,False
+68,Tarun Mehta,Founder & CEO,Ather Energy,C-Suite,DeepTech/AI,4,mock,,,,,,,,,,pending,False
+69,Pawan Munjal,MD,Hero Vired,Manager/IC,Edtech,2,mock,,,,,,,,,,pending,False
+70,Neha Aggarwal,Co-founder & COO,Classplus,C-Suite,Edtech,4,mock,,,,,,,,,,pending,False
+71,Abhimanyu Saxena,Co-founder,Scaler Academy,C-Suite,Edtech,4,mock,,,,,,,,,,pending,False
+72,Ashwin Damera,CEO,Eruditus,C-Suite,Edtech,4,mock,,,,,,,,,,pending,False
+73,Beas Dev Ralhan,CEO,Next Education,C-Suite,Edtech,4,mock,,,,,,,,,,pending,False
+74,Yamini Bhat,Co-founder & CEO,Vymo,C-Suite,Edtech,4,mock,,,,,,,,,,pending,False
+75,Rajan Anandan,VP India & SE Asia,Sequoia Capital,VP/Director,VC/PE,3,mock,,,,,,,,,,pending,False
+76,Aparna Ballakur,Country Head,Google for Startups India,Manager/IC,SaaS/B2B,3,mock,,,,,,,,,,pending,False
+77,Shalini Pillay,Office Managing Partner,KPMG India,VP/Director,SaaS/B2B,4,mock,,,,,,,,,,pending,False
+78,Sangeeta Gupta,SVP & Chief Evangelist,NASSCOM,C-Suite,Government,3,mock,,,,,,,,,,pending,False
+79,Ritesh Agarwal,Founder & CEO,OYO,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+80,Siddharth Sharma,Head of Startup Ecosystem,AWS India,VP/Director,SaaS/B2B,4,mock,,,,,,,,,,pending,False
+81,Prashant Pansare,Director Enterprise Sales,Salesforce India,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+82,Vikram Ahuja,Co-founder,Talent500,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+83,Prashant Tandon,Co-founder & CEO,1mg,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+84,Gaurav Gupta,Founder,Eka Care,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+85,Nandini Mansinghka,CEO,Mumbai Angels Network,C-Suite,VC/PE,4,mock,,,,,,,,,,pending,False
+86,Anmol Jaggi,Co-founder,BluSmart Mobility,C-Suite,Mobility,4,mock,,,,,,,,,,pending,False
+87,Hemant Beniwal,CTO,Pristyn Care,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+88,Vikram Vuppala,Founder & CEO,NephroPlus,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+89,Keerthi Reddy,Co-founder,Zypp Electric,C-Suite,Mobility,4,mock,,,,,,,,,,pending,False
+90,Girish Mathrubootham,Founder & Executive Chairman,Freshworks,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+91,Shekhar Kirani,Partner,Accel India,VP/Director,VC/PE,3,mock,,,,,,,,,,pending,False
+92,Harsh Shah,Co-founder,Fynd,C-Suite,D2C/Ecomm,5,mock,,,,,,,,,,pending,False
+93,Abhinav Lal,CTO & Co-founder,Healthifyme,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+94,Sanjeev Bikhchandani,Founder,Info Edge,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+95,Anupam Mittal,Founder & CEO,Shaadi.com,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+96,Deepinder Goyal,Co-founder & CEO,Zomato,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+97,Amit Lakhotia,Founder & CEO,Park+,C-Suite,Mobility,4,mock,,,,,,,,,,pending,False
+98,Supam Maheshwari,Founder & CEO,FirstCry,C-Suite,D2C/Ecomm,5,mock,,,,,,,,,,pending,False
+99,Mohit Bhatnagar,Managing Director,Sequoia India,C-Suite,VC/PE,4,mock,,,,,,,,,,pending,False
+100,Jyoti Bansal,Founder & CEO,Harness,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+101,Amarpreet Kalkat,Founder & CEO,Humanic AI,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+102,Sanjay Mehta,Founder,100X.VC,C-Suite,VC/PE,4,mock,,,,,,,,,,pending,False
+103,Prashanth Prakash,Partner,Accel India,VP/Director,VC/PE,3,mock,,,,,,,,,,pending,False
+104,Padmaja Ruparel,Co-founder,Indian Angel Network,C-Suite,VC/PE,4,mock,,,,,,,,,,pending,False
+105,Shailendra Singh,Managing Director,Peak XV Partners,C-Suite,VC/PE,4,mock,,,,,,,,,,pending,False
+106,Vani Kola,Managing Director,Kalaari Capital,C-Suite,VC/PE,4,mock,,,,,,,,,,pending,False
+107,Sudhir Sethi,Founder & Chairman,Chiratae Ventures,C-Suite,VC/PE,4,mock,,,,,,,,,,pending,False
+108,Arun Kumar,CTO,Infosys BPM,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+109,Rekha Menon,Chairperson,Accenture India,Manager/IC,SaaS/B2B,3,mock,,,,,,,,,,pending,False
+110,Harshil Mathur,CEO & Co-founder,Razorpay,C-Suite,Fintech,5,mock,,,,,,,,,,pending,False
+111,Kunal Shah,Founder & CEO,CRED,C-Suite,Fintech,5,mock,,,,,,,,,,pending,False
+112,Sameer Nigam,Founder & CEO,PhonePe,C-Suite,Fintech,5,mock,,,,,,,,,,pending,False
+113,Sriharsha Majety,Co-founder & CEO,Swiggy,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+114,Sujeet Kumar,Co-founder,Udaan,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+115,Jayendra Patel,VP Product,Meesho,VP/Director,D2C/Ecomm,4,mock,,,,,,,,,,pending,False
+116,Akash Gehani,Co-founder & COO,Instamojo,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+117,Pallavi Tyagi,Head of Marketing,MoEngage,VP/Director,SaaS/B2B,4,mock,,,,,,,,,,pending,False
+118,Ravi Shankar,VP Sales,Salesken,VP/Director,SaaS/B2B,4,mock,,,,,,,,,,pending,False
+119,Kanika Tekriwal,Founder & CEO,JetSetGo,C-Suite,Mobility,4,mock,,,,,,,,,,pending,False
+120,Anand Chandrasekaran,Chief Product Officer,Airtel,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+121,Rohan Mirchandani,Co-founder & CEO,Epigamia,C-Suite,D2C/Ecomm,5,mock,,,,,,,,,,pending,False
+122,Varun Dua,Founder & CEO,Acko Insurance,C-Suite,Fintech,5,mock,,,,,,,,,,pending,False
+123,Vishal Gondal,Founder & CEO,GOQii,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+124,Nakul Kumar,Co-founder & COO,Cashify,C-Suite,Fintech,5,mock,,,,,,,,,,pending,False
+125,Shubhranshu Singh,VP Marketing,Tata Motors,VP/Director,SaaS/B2B,4,mock,,,,,,,,,,pending,False
+126,Sonal Saldanha,Country Director,Endeavor India,C-Suite,VC/PE,4,mock,,,,,,,,,,pending,False
+127,Sharad Sharma,Co-founder,iSPIRT Foundation,C-Suite,Government,3,mock,,,,,,,,,,pending,False
+128,Tushar Vashisht,Co-founder & CEO,Healthifyme,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+129,Smita Deorah,Co-founder,LEAD School,C-Suite,Edtech,4,mock,,,,,,,,,,pending,False
+130,Neeraj Gupta,CEO,Policybazaar UAE,C-Suite,Fintech,5,mock,,,,,,,,,,pending,False
+131,Piyush Jain,Co-founder,Simpl,C-Suite,Fintech,5,mock,,,,,,,,,,pending,False
+132,Mansi Jain,VP Partnerships,Spinny,VP/Director,Mobility,3,mock,,,,,,,,,,pending,False
+133,Sanchit Vir Gogia,Chief Analyst & CEO,Greyhound Research,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+134,Priya Mohan,Head of Product,upGrad,VP/Director,Edtech,3,mock,,,,,,,,,,pending,False
+135,Mohit Sadaani,Co-founder & CEO,The Moms Co,C-Suite,D2C/Ecomm,5,mock,,,,,,,,,,pending,False
+136,Yagnesh Sanghrajka,CFO,100X.VC,C-Suite,VC/PE,4,mock,,,,,,,,,,pending,False
+137,Sreejith Moolayil,Co-founder,True Elements,C-Suite,D2C/Ecomm,5,mock,,,,,,,,,,pending,False
+138,Veena Ashiya,Founder & CEO,Monrow Shoes,C-Suite,D2C/Ecomm,5,mock,,,,,,,,,,pending,False
+139,Aparajita Amar,Co-founder,Sirona Hygiene,C-Suite,D2C/Ecomm,5,mock,,,,,,,,,,pending,False
+140,Ankur Warikoo,Founder,Nearbuy,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+141,Chirag Jain,Co-founder & CEO,Ezetap,C-Suite,Fintech,5,mock,,,,,,,,,,pending,False
+142,Rajiv Mehta,VP Strategy,Wipro Ventures,VP/Director,VC/PE,3,mock,,,,,,,,,,pending,False
+143,Arpit Agarwal,Partner,Blume Ventures,VP/Director,VC/PE,3,mock,,,,,,,,,,pending,False
+144,Prayank Swaroop,Partner,Accel India,VP/Director,VC/PE,3,mock,,,,,,,,,,pending,False
+145,Mridul Arora,Partner,Saama Capital,VP/Director,VC/PE,3,mock,,,,,,,,,,pending,False
+146,Parag Dhol,Managing Director,Inventus Capital India,C-Suite,VC/PE,4,mock,,,,,,,,,,pending,False
+147,Ravi Adusumalli,Managing Partner,SAIF Partners,VP/Director,VC/PE,3,mock,,,,,,,,,,pending,False
+148,Nandini Vaidyanathan,Founder,CARMa Connect,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+149,Devendra Parulekar,Partner,SQream Technologies,VP/Director,DeepTech/AI,3,mock,,,,,,,,,,pending,False
+150,Asha Jadeja,Partner,Motwani Jadeja Foundation,VP/Director,VC/PE,3,mock,,,,,,,,,,pending,False
+151,Karan Mehrotra,Co-founder,Society9,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+152,Ranjit Satyanath,Director Engineering,Flipkart,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+153,Hari TN,Chief People Officer,BigBasket,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+154,Shankar Narayanan,MD India,Carlyle Group,Manager/IC,VC/PE,2,mock,,,,,,,,,,pending,False
+155,Ajay Data,Founder & CEO,Data XGen Technologies,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+156,Bindisha Sarang,Head of Content,Paytm Insider,VP/Director,Fintech,4,mock,,,,,,,,,,pending,False
+157,Sonica Aron,Founder & MD,Marching Sheep,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+158,Ambarish Mitra,Co-founder,Blippar,C-Suite,D2C/Ecomm,5,mock,,,,,,,,,,pending,False
+159,Mekin Maheshwari,Founder,Udhyam Learning Foundation,C-Suite,Edtech,4,mock,,,,,,,,,,pending,False
+160,Nikhil Barshikar,Founder,Imarticus,C-Suite,Edtech,4,mock,,,,,,,,,,pending,False
+161,Sanjay Salunkhe,CEO,Imarticus Learning,C-Suite,Edtech,4,mock,,,,,,,,,,pending,False
+162,Shreya Mishra,Founder,Phool.co,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+163,Aashish Solanki,Head of Product,Curefit,VP/Director,SaaS/B2B,4,mock,,,,,,,,,,pending,False
+164,Vikas Garg,Co-founder,Beato,C-Suite,D2C/Ecomm,5,mock,,,,,,,,,,pending,False
+165,Aarti Ahuja,Co-founder & CEO,Stretch Money,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+166,Richa Kar,Co-founder,Zivame,C-Suite,D2C/Ecomm,5,mock,,,,,,,,,,pending,False
+167,Ruchit Garg,Founder & CEO,Harvesting,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+168,Sunitha Lal,COO,Kotak Ventures,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,False
+169,Arshad Chaudhary,VP Business Development,Bigbasket,VP/Director,SaaS/B2B,4,mock,,,,,,,,,,pending,False
+170,Krishnamurthy Subramanian,Co-founder,Ola Krutrim,C-Suite,DeepTech/AI,4,mock,,,,,,,,,,pending,False
+171,Pradeep MS,Head of Partnerships,Juspay,VP/Director,SaaS/B2B,4,mock,,,,,,,,,,pending,False
+172,Shiv Shivakumar,Group Executive President,Aditya Birla Group,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,FALSE
+173,Prachi Mishra,VP Marketing,Swiggy,VP/Director,D2C/Ecomm,4,mock,,,,,,,,,,pending,FALSE
+174,Kapil Makhija,CEO,Unicommerce,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,FALSE
+175,Prateek Maheshwari,Co-founder,Physics Wallah,C-Suite,Edtech,4,mock,,,,,,,,,,pending,FALSE
+176,Arjun Malhotra,Head of Engineering,Dunzo,VP/Director,Mobility,3,mock,,,,,,,,,,pending,FALSE
+177,Shalabh Saxena,CEO,Pine Labs,C-Suite,Fintech,5,mock,,,,,,,,,,pending,FALSE
+178,Rashmi Daga,Founder & CEO,FreshMenu,C-Suite,D2C/Ecomm,5,mock,,,,,,,,,,pending,FALSE
+179,Vineeta Singh,Co-founder & CEO,SUGAR Cosmetics,C-Suite,D2C/Ecomm,5,mock,,,,,,,,,,pending,FALSE
+180,Dhruv Toshniwal,Co-founder,Letstransport,C-Suite,Mobility,4,mock,,,,,,,,,,pending,FALSE
+181,Utsav Somani,Partner,AngelList India,VP/Director,VC/PE,3,mock,,,,,,,,,,pending,FALSE
+182,Kunal Khattar,Founding Partner,AdvantEdge Founders,C-Suite,VC/PE,4,mock,,,,,,,,,,pending,FALSE
+183,Sanjay Swamy,Managing Partner,Prime Venture Partners,C-Suite,VC/PE,4,mock,,,,,,,,,,pending,FALSE
+184,Rajesh Sawhney,Founder,GSF Accelerator,C-Suite,VC/PE,4,mock,,,,,,,,,,pending,FALSE
+185,Anurag Jain,Co-founder,AccessPay,C-Suite,Fintech,5,mock,,,,,,,,,,pending,FALSE
+186,Shivani Gupta,Founder & CEO,Assiduus Global,C-Suite,D2C/Ecomm,5,mock,,,,,,,,,,pending,FALSE
+187,Ramki Gaddipati,Co-founder & CTO,Zeta,C-Suite,Fintech,5,mock,,,,,,,,,,pending,FALSE
+188,Gaurav Hinduja,Co-founder & MD,Capital Float,C-Suite,Fintech,5,mock,,,,,,,,,,pending,FALSE
+189,Sushanto Mitra,CEO,Lead Angels,C-Suite,VC/PE,4,mock,,,,,,,,,,pending,FALSE
+190,Kalyani Nair,VP Operations,Licious,VP/Director,D2C/Ecomm,4,mock,,,,,,,,,,pending,FALSE
+191,Anurag Ramdasan,Partner,3one4 Capital,VP/Director,VC/PE,3,mock,,,,,,,,,,pending,FALSE
+192,Bharat Garg,VP Product,BrowserStack,VP/Director,SaaS/B2B,4,mock,,,,,,,,,,pending,FALSE
+193,Neeraj Bansal,Partner,KPMG India,VP/Director,SaaS/B2B,4,mock,,,,,,,,,,pending,FALSE
+194,Alka Nangia Arora,Joint Secretary,Ministry of Commerce,VP/Director,Government,2,mock,,,,,,,,,,pending,FALSE
+195,Somasekhar Sundaresan,Partner,JS & Associates,VP/Director,SaaS/B2B,4,mock,,,,,,,,,,pending,FALSE
+196,Lavanya Ashok,Head of Strategy,Razorpay,VP/Director,Fintech,4,mock,,,,,,,,,,pending,FALSE
+197,Sathya Pramodh,Co-founder,Locus.sh,C-Suite,SaaS/B2B,5,mock,,,,,,,,,,pending,FALSE
+198,Navneet Singh,Founder & CEO,Ventive.ai,C-Suite,DeepTech/AI,4,mock,,,,,,,,,,pending,FALSE
+199,Karthik Reddy,Co-founder & Managing Partner,Blume Ventures,C-Suite,VC/PE,4,mock,,,,,,,,,,pending,FALSE
+200,Sundar Viswanathan,"MD, India",Intel Capital,C-Suite,VC/PE,4,mock,,,,,,,,,,pending,FALSE

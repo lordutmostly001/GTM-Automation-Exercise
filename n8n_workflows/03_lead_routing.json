@@ -1,0 +1,173 @@
+{
+  "name": "TechSparks — 03 Lead Routing & Escalation",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "hours", "hoursInterval": 12 }]
+        }
+      },
+      "name": "Trigger: Every 12 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "notes": "Runs twice a day. Picks up any newly enriched or persona-generated contacts and routes them."
+    },
+    {
+      "parameters": {
+        "operation": "readAllRows",
+        "documentId": "={{ $env.GSHEET_DOC_ID }}",
+        "sheetName": "Master",
+        "options": { "headerRow": 1 }
+      },
+      "name": "Read All Contacts",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 2,
+      "position": [460, 300],
+      "credentials": { "googleSheetsOAuth2Api": { "id": "1", "name": "Google Sheets" } }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            { "value1": "={{ $json.assigned_to }}", "operation": "isEmpty" },
+            { "value1": "={{ $json.persona_summary }}", "operation": "isNotEmpty" },
+            { "value1": "={{ $json.confidence_flag }}", "operation": "notEqual", "value2": "LOW" }
+          ]
+        },
+        "combineOperation": "all"
+      },
+      "name": "Filter: Unassigned + Has Persona",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [680, 300],
+      "notes": "Only route contacts that have a persona but haven't been assigned yet. LOW confidence stays in human review queue."
+    },
+    {
+      "parameters": {
+        "functionCode": "// Apply routing rules\nconst ROUTING = {\n  'C-Suite':     { owner_role: 'Senior AE',  sender_level: 'Leadership' },\n  'VP/Director': { owner_role: 'AE',          sender_level: 'AE' },\n  'Manager/IC':  { owner_role: 'SDR',          sender_level: 'SDR' },\n};\n\nconst SENDERS = {\n  'Leadership': { name: 'Rohan Mehta',  title: 'VP of Partnerships',   email: 'rohan@company.co' },\n  'AE':         { name: 'Sneha Kapoor', title: 'Account Executive',     email: 'sneha@company.co' },\n  'SDR':        { name: 'Arjun Sharma', title: 'Sales Development Rep', email: 'arjun@company.co' },\n};\n\n// Simple round-robin (in production: pull from CRM API)\nconst OWNERS = {\n  'Senior AE': ['Priya Nair', 'Vikram Sethi'],\n  'AE':        ['Sneha Kapoor', 'Rahul Desai', 'Meera Iyer'],\n  'SDR':       ['Arjun Sharma', 'Divya Menon', 'Karan Bose'],\n};\n\nconst items    = $input.all();\nconst counters = {};\n\nconst routed = items.map(item => {\n  const c       = item.json;\n  const seniority = c.seniority_tier || 'Manager/IC';\n  const rules   = ROUTING[seniority] || ROUTING['Manager/IC'];\n  const role    = rules.owner_role;\n  const sl      = rules.sender_level;\n  const sender  = SENDERS[sl];\n  const pool    = OWNERS[role] || OWNERS['SDR'];\n\n  // Round-robin counter per role\n  if (!counters[role]) counters[role] = 0;\n  const owner = pool[counters[role] % pool.length];\n  counters[role]++;\n\n  const needsReview = c.icp_score >= 5 && seniority === 'C-Suite';\n\n  return {\n    json: {\n      ...c,\n      assigned_to:       owner,\n      owner_role:        role,\n      sender_name:       sender.name,\n      sender_title:      sender.title,\n      sender_email:      sender.email,\n      leadership_review: needsReview ? 'YES' : 'NO',\n      routing_notes:     needsReview ? 'ICP 5 + C-Suite — leadership must approve before send' : '',\n    }\n  };\n});\n\nreturn routed;"
+      },
+      "name": "Apply Routing Rules",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [900, 300],
+      "notes": "Assigns owner (round-robin within role tier), sender persona, and flags ICP 5 C-Suite contacts for leadership review before any message goes out."
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": "={{ $env.GSHEET_DOC_ID }}",
+        "sheetName": "Master",
+        "columnToMatchOn": "id",
+        "valueToMatchOn": "={{ $json.id }}",
+        "fieldsUi": {
+          "values": [
+            { "column": "assigned_to",       "fieldValue": "={{ $json.assigned_to }}" },
+            { "column": "owner_role",        "fieldValue": "={{ $json.owner_role }}" },
+            { "column": "sender_name",       "fieldValue": "={{ $json.sender_name }}" },
+            { "column": "sender_title",      "fieldValue": "={{ $json.sender_title }}" },
+            { "column": "sender_email",      "fieldValue": "={{ $json.sender_email }}" },
+            { "column": "leadership_review", "fieldValue": "={{ $json.leadership_review }}" },
+            { "column": "routing_notes",     "fieldValue": "={{ $json.routing_notes }}" }
+          ]
+        }
+      },
+      "name": "Write Routing to Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 2,
+      "position": [1120, 300],
+      "credentials": { "googleSheetsOAuth2Api": { "id": "1", "name": "Google Sheets" } },
+      "notes": "Writes owner assignment + sender back to the master sheet. Outreach Workflow 02 will pick these up on next run."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            { "value1": "={{ $json.leadership_review }}", "operation": "equal", "value2": "YES" }
+          ]
+        }
+      },
+      "name": "Filter: Leadership Escalations",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1340, 300],
+      "notes": "Separate out contacts that need leadership approval before outreach."
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": "={{ $env.GSHEET_DOC_ID }}",
+        "sheetName": "Leadership Review Queue",
+        "fieldsUi": {
+          "values": [
+            { "column": "id",                  "fieldValue": "={{ $json.id }}" },
+            { "column": "name",                "fieldValue": "={{ $json.name }}" },
+            { "column": "title",               "fieldValue": "={{ $json.title }}" },
+            { "column": "company",             "fieldValue": "={{ $json.company }}" },
+            { "column": "icp_score",           "fieldValue": "={{ $json.icp_score }}" },
+            { "column": "assigned_to",         "fieldValue": "={{ $json.assigned_to }}" },
+            { "column": "persona_summary",     "fieldValue": "={{ $json.persona_summary }}" },
+            { "column": "li_connect_msg",      "fieldValue": "={{ $json.li_connect_msg }}" },
+            { "column": "email_subject",       "fieldValue": "={{ $json.email_subject }}" },
+            { "column": "email_body",          "fieldValue": "={{ $json.email_body }}" },
+            { "column": "approval_status",     "fieldValue": "pending" },
+            { "column": "queued_at",           "fieldValue": "={{ $now.toISODate() }}" }
+          ]
+        }
+      },
+      "name": "Add to Leadership Queue",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 2,
+      "position": [1560, 200],
+      "credentials": { "googleSheetsOAuth2Api": { "id": "1", "name": "Google Sheets" } },
+      "notes": "ICP 5 + C-Suite contacts go to a dedicated 'Leadership Review Queue' tab. A VP/CEO reads the pre-built message and approves/edits before it sends."
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "post",
+        "channel": "={{ $env.SLACK_CHANNEL_LEADERSHIP }}",
+        "text": "=🔴 *Leadership Review Required*\n\n*Contact:* {{ $json.name }} — {{ $json.title }} @ {{ $json.company }}\n*ICP Score:* {{ $json.icp_score }}/5\n*Assigned to:* {{ $json.assigned_to }}\n\n*Persona:* {{ $json.persona_summary }}\n\n*Proposed LinkedIn message:*\n```{{ $json.li_connect_msg }}```\n\n✅ Approve in the Leadership Review Queue sheet, then mark `approval_status = approved`."
+      },
+      "name": "Slack: Alert Leadership",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2,
+      "position": [1780, 200],
+      "credentials": { "slackApi": { "id": "2", "name": "Slack" } },
+      "notes": "Sends a Slack alert to the leadership channel for each ICP 5 contact. Includes the pre-built message for review. No outreach goes out until approval_status = 'approved' in the sheet."
+    },
+    {
+      "parameters": {
+        "functionCode": "// Deduplicate: check if same company has multiple contacts assigned to different owners\n// In n8n: we do this check in-memory within this execution\nconst items = $input.all();\nconst companyOwner = {};\nconst conflicts    = [];\n\nfor (const item of items) {\n  const c       = item.json;\n  const coRoot  = (c.company || '').toLowerCase().split(' ')[0];\n  const owner   = c.assigned_to;\n\n  if (companyOwner[coRoot] && companyOwner[coRoot] !== owner) {\n    conflicts.push({\n      company:        c.company,\n      contact:        c.name,\n      existing_owner: companyOwner[coRoot],\n      new_owner:      owner,\n    });\n  } else {\n    companyOwner[coRoot] = owner;\n  }\n}\n\nif (conflicts.length > 0) {\n  console.log(`[DEDUP] ${conflicts.length} company conflicts detected:`, JSON.stringify(conflicts));\n}\n\n// Pass all items through — conflict logging only in this node\nreturn items;"
+      },
+      "name": "Dedup: Company Conflict Check",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1340, 440],
+      "notes": "Logs any cases where the same company has two contacts assigned to different owners. Does not block — alerts for manual resolution. At scale, this would write conflicts to a dedicated sheet."
+    }
+  ],
+  "connections": {
+    "Trigger: Every 12 Hours":        { "main": [[{ "node": "Read All Contacts",               "type": "main", "index": 0 }]] },
+    "Read All Contacts":              { "main": [[{ "node": "Filter: Unassigned + Has Persona", "type": "main", "index": 0 }]] },
+    "Filter: Unassigned + Has Persona":{ "main": [[{ "node": "Apply Routing Rules",            "type": "main", "index": 0 }]] },
+    "Apply Routing Rules":            { "main": [[{ "node": "Write Routing to Sheet",           "type": "main", "index": 0 }]] },
+    "Write Routing to Sheet":         { "main": [[{ "node": "Filter: Leadership Escalations",   "type": "main", "index": 0 }]] },
+    "Filter: Leadership Escalations": {
+      "main": [
+        [{ "node": "Add to Leadership Queue",      "type": "main", "index": 0 }],
+        [{ "node": "Dedup: Company Conflict Check","type": "main", "index": 0 }]
+      ]
+    },
+    "Add to Leadership Queue": { "main": [[{ "node": "Slack: Alert Leadership", "type": "main", "index": 0 }]] }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "TechSparks — Error Handler"
+  },
+  "tags": ["techsparks", "lead-routing"],
+  "_meta": {
+    "description": "Runs every 12h. Picks up newly persona-generated contacts, assigns owners by seniority tier (round-robin), escalates ICP 5 C-Suite to Slack leadership channel, detects company conflicts.",
+    "env_vars_required": ["GSHEET_DOC_ID", "SLACK_CHANNEL_LEADERSHIP"]
+  }
+}

@@ -1,0 +1,9 @@
+pandas
+requests
+python-dotenv
+openai
+selenium
+beautifulsoup4
+pandas
+requests
+

@@ -1,0 +1,301 @@
+2026-02-19 01:13:13,236 [INFO] Loading: data/enriched/techsparks_enriched.csv
+2026-02-19 01:13:13,269 [INFO] Generating personas for 200 contacts | Model: anthropic/claude-3-haiku | Version: v1.2 | Dry run: True
+2026-02-19 01:13:13,270 [INFO] [1/200] Mabel Chacko @ Open Financial Technologies (ICP 5, Fintech)
+2026-02-19 01:13:13,271 [INFO] [Mabel Chacko] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:13,271 [INFO] [2/200] Subbu Iyer @ Giggr Technologies (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,284 [INFO] [3/200] Kunal Bahl @ Snapdeal & Titan Capital (ICP 5, D2C/Ecomm)
+2026-02-19 01:13:13,290 [INFO] [4/200] Ananth Narayanan @ Mensa Brands (ICP 5, D2C/Ecomm)
+2026-02-19 01:13:13,298 [INFO] [5/200] Lalit Keshre @ Groww (ICP 5, Fintech)
+2026-02-19 01:13:13,307 [INFO] [6/200] Rahul Chari @ PhonePe (ICP 5, Fintech)
+2026-02-19 01:13:13,321 [INFO] [7/200] Naveen Tewari @ InMobi Group (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,331 [INFO] [8/200] Nithin Kamath @ Zerodha & Rainmatter (ICP 5, Fintech)
+2026-02-19 01:13:13,349 [INFO] [9/200] Rahul Dey @ Haptik (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,362 [INFO] [10/200] Rahul Suri @ Rocketlane (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,373 [INFO] [11/200] Alok Jain @ Clientjoy (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,374 [INFO] [Alok Jain] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:13,375 [INFO] [12/200] Kavya Rao @ Sprinto (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,392 [INFO] [13/200] Aditya Bansal @ RazorX (ICP 5, Fintech)
+2026-02-19 01:13:13,393 [INFO] [Aditya Bansal] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:13,395 [INFO] [14/200] Sneha Reddy @ NeoBank One (ICP 5, Fintech)
+2026-02-19 01:13:13,396 [INFO] [Sneha Reddy] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:13,398 [INFO] [15/200] Ishaan Chopra @ Quickwork (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,403 [INFO] [Ishaan Chopra] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:13,405 [INFO] [16/200] Shashank Kumar @ Razorpay (ICP 5, Fintech)
+2026-02-19 01:13:13,407 [INFO] [Shashank Kumar] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:13,409 [INFO] [17/200] Saurabh Bhatia @ InsuranceFirst (ICP 5, Fintech)
+2026-02-19 01:13:13,424 [INFO] [18/200] Deepika Nair @ WealthBridge (ICP 5, Fintech)
+2026-02-19 01:13:13,476 [INFO] [19/200] Priya Krishnamurthy @ LendGrid (ICP 5, Fintech)
+2026-02-19 01:13:13,486 [INFO] [Priya Krishnamurthy] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:13,498 [INFO] [20/200] Arjun Mehta @ FinStack Labs (ICP 5, Fintech)
+2026-02-19 01:13:13,592 [INFO] [21/200] Ritika Gupta @ Finova Capital (ICP 5, Fintech)
+2026-02-19 01:13:13,654 [INFO] [22/200] Vikram Sinha @ LoanTap (ICP 5, Fintech)
+2026-02-19 01:13:13,663 [INFO] [23/200] Ananya Sharma @ CreditSense (ICP 5, Fintech)
+2026-02-19 01:13:13,664 [INFO] [Ananya Sharma] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:13,665 [INFO] [24/200] Karan Malhotra @ PayFlow India (ICP 5, Fintech)
+2026-02-19 01:13:13,669 [INFO] [25/200] Nandita Iyer @ Leadsquared (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,674 [INFO] [Nandita Iyer] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:13,711 [INFO] [26/200] Divya Menon @ Pilgrim India (ICP 5, D2C/Ecomm)
+2026-02-19 01:13:13,717 [INFO] [27/200] Rashmi Tomar @ Blissclub (ICP 5, D2C/Ecomm)
+2026-02-19 01:13:13,719 [INFO] [Rashmi Tomar] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:13,720 [INFO] [28/200] Ankit Garg @ WOW Skin Science (ICP 5, D2C/Ecomm)
+2026-02-19 01:13:13,731 [INFO] [29/200] Prerna Singh @ Aastey (ICP 5, D2C/Ecomm)
+2026-02-19 01:13:13,736 [INFO] [30/200] Shruti Bose @ Snitch Fashion (ICP 5, D2C/Ecomm)
+2026-02-19 01:13:13,745 [INFO] [31/200] Ayush Tiwari @ Bey Bee (ICP 5, D2C/Ecomm)
+2026-02-19 01:13:13,748 [INFO] [Ayush Tiwari] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:13,749 [INFO] [32/200] Rohit Verma @ Stackr.io (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,762 [INFO] [33/200] Sandeep Kumar @ DemandBase India (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,776 [INFO] [34/200] Tanvi Shah @ Plum Goodness (ICP 5, D2C/Ecomm)
+2026-02-19 01:13:13,785 [INFO] [35/200] Kapil Makhija @ Unicommerce (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,789 [INFO] [36/200] Shiv Shivakumar @ Aditya Birla Group (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,793 [INFO] [37/200] Sonica Aron @ Marching Sheep (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,800 [INFO] [38/200] Ambarish Mitra @ Blippar (ICP 5, D2C/Ecomm)
+2026-02-19 01:13:13,800 [INFO] [Ambarish Mitra] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:13,802 [INFO] [39/200] Ajay Data @ Data XGen Technologies (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,804 [INFO] [40/200] Sanchit Vir Gogia @ Greyhound Research (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,810 [INFO] [41/200] Arun Kumar @ Infosys BPM (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,811 [INFO] [Arun Kumar] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:13,813 [INFO] [42/200] Sameer Nigam @ PhonePe (ICP 5, Fintech)
+2026-02-19 01:13:13,821 [INFO] [43/200] Kunal Shah @ CRED (ICP 5, Fintech)
+2026-02-19 01:13:13,826 [INFO] [44/200] Harshil Mathur @ Razorpay (ICP 5, Fintech)
+2026-02-19 01:13:13,831 [INFO] [45/200] Anand Chandrasekaran @ Airtel (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,836 [INFO] [46/200] Akash Gehani @ Instamojo (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,837 [INFO] [Akash Gehani] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:13,838 [INFO] [47/200] Sujeet Kumar @ Udaan (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,839 [INFO] [Sujeet Kumar] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:13,839 [INFO] [48/200] Sriharsha Majety @ Swiggy (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,843 [INFO] [49/200] Neeraj Gupta @ Policybazaar UAE (ICP 5, Fintech)
+2026-02-19 01:13:13,851 [INFO] [50/200] Piyush Jain @ Simpl (ICP 5, Fintech)
+2026-02-19 01:13:13,852 [INFO] [Piyush Jain] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:13,870 [INFO] [51/200] Mohit Sadaani @ The Moms Co (ICP 5, D2C/Ecomm)
+2026-02-19 01:13:13,875 [INFO] [52/200] Tushar Vashisht @ Healthifyme (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,884 [INFO] [53/200] Nakul Kumar @ Cashify (ICP 5, Fintech)
+2026-02-19 01:13:13,885 [INFO] [Nakul Kumar] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:13,886 [INFO] [54/200] Vishal Gondal @ GOQii (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,891 [INFO] [55/200] Varun Dua @ Acko Insurance (ICP 5, Fintech)
+2026-02-19 01:13:13,902 [INFO] [56/200] Rohan Mirchandani @ Epigamia (ICP 5, D2C/Ecomm)
+2026-02-19 01:13:13,919 [INFO] [57/200] Girish Mathrubootham @ Freshworks (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,939 [INFO] [58/200] Harsh Shah @ Fynd (ICP 5, D2C/Ecomm)
+2026-02-19 01:13:13,939 [INFO] [Harsh Shah] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:13,941 [INFO] [59/200] Sanjeev Bikhchandani @ Info Edge (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,947 [INFO] [60/200] Abhinav Lal @ Healthifyme (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,947 [INFO] [Abhinav Lal] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:13,949 [INFO] [61/200] Anupam Mittal @ Shaadi.com (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,955 [INFO] [62/200] Deepinder Goyal @ Zomato (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,963 [INFO] [63/200] Jyoti Bansal @ Harness (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,968 [INFO] [64/200] Supam Maheshwari @ FirstCry (ICP 5, D2C/Ecomm)
+2026-02-19 01:13:13,975 [INFO] [65/200] Amarpreet Kalkat @ Humanic AI (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,983 [INFO] [66/200] Vikram Ahuja @ Talent500 (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,985 [INFO] [Vikram Ahuja] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:13,986 [INFO] [67/200] Prashant Pansare @ Salesforce India (ICP 5, SaaS/B2B)
+2026-02-19 01:13:13,987 [INFO] [Prashant Pansare] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:13,988 [INFO] [68/200] Gaurav Gupta @ Eka Care (ICP 5, SaaS/B2B)
+2026-02-19 01:13:14,000 [INFO] [69/200] Vikram Vuppala @ NephroPlus (ICP 5, SaaS/B2B)
+2026-02-19 01:13:14,005 [INFO] [70/200] Hemant Beniwal @ Pristyn Care (ICP 5, SaaS/B2B)
+2026-02-19 01:13:14,005 [INFO] [Hemant Beniwal] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,006 [INFO] [71/200] Prashant Tandon @ 1mg (ICP 5, SaaS/B2B)
+2026-02-19 01:13:14,016 [INFO] [72/200] Ritesh Agarwal @ OYO (ICP 5, SaaS/B2B)
+2026-02-19 01:13:14,023 [INFO] [73/200] Hari TN @ BigBasket (ICP 5, SaaS/B2B)
+2026-02-19 01:13:14,024 [INFO] [Hari TN] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,025 [INFO] [74/200] Ranjit Satyanath @ Flipkart (ICP 5, SaaS/B2B)
+2026-02-19 01:13:14,025 [INFO] [Ranjit Satyanath] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,025 [INFO] [75/200] Karan Mehrotra @ Society9 (ICP 5, SaaS/B2B)
+2026-02-19 01:13:14,026 [INFO] [Karan Mehrotra] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,037 [INFO] [76/200] Chirag Jain @ Ezetap (ICP 5, Fintech)
+2026-02-19 01:13:14,047 [INFO] [77/200] Aarti Ahuja @ Stretch Money (ICP 5, SaaS/B2B)
+2026-02-19 01:13:14,052 [INFO] [78/200] Richa Kar @ Zivame (ICP 5, D2C/Ecomm)
+2026-02-19 01:13:14,052 [INFO] [Richa Kar] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,053 [INFO] [79/200] Shivani Gupta @ Assiduus Global (ICP 5, D2C/Ecomm)
+2026-02-19 01:13:14,071 [INFO] [80/200] Anurag Jain @ AccessPay (ICP 5, Fintech)
+2026-02-19 01:13:14,072 [INFO] [Anurag Jain] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,073 [INFO] [81/200] Gaurav Hinduja @ Capital Float (ICP 5, Fintech)
+2026-02-19 01:13:14,080 [INFO] [82/200] Sathya Pramodh @ Locus.sh (ICP 5, SaaS/B2B)
+2026-02-19 01:13:14,081 [INFO] [Sathya Pramodh] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,083 [INFO] [83/200] Rashmi Daga @ FreshMenu (ICP 5, D2C/Ecomm)
+2026-02-19 01:13:14,088 [INFO] [84/200] Shalabh Saxena @ Pine Labs (ICP 5, Fintech)
+2026-02-19 01:13:14,095 [INFO] [85/200] Vineeta Singh @ SUGAR Cosmetics (ICP 5, D2C/Ecomm)
+2026-02-19 01:13:14,100 [INFO] [86/200] Ramki Gaddipati @ Zeta (ICP 5, Fintech)
+2026-02-19 01:13:14,100 [INFO] [Ramki Gaddipati] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,101 [INFO] [87/200] Sunitha Lal @ Kotak Ventures (ICP 5, SaaS/B2B)
+2026-02-19 01:13:14,101 [INFO] [Sunitha Lal] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,102 [INFO] [88/200] Ruchit Garg @ Harvesting (ICP 5, SaaS/B2B)
+2026-02-19 01:13:14,106 [INFO] [89/200] Nandini Vaidyanathan @ CARMa Connect (ICP 5, SaaS/B2B)
+2026-02-19 01:13:14,109 [INFO] [90/200] Aparajita Amar @ Sirona Hygiene (ICP 5, D2C/Ecomm)
+2026-02-19 01:13:14,111 [INFO] [Aparajita Amar] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,112 [INFO] [91/200] Veena Ashiya @ Monrow Shoes (ICP 5, D2C/Ecomm)
+2026-02-19 01:13:14,115 [INFO] [92/200] Sreejith Moolayil @ True Elements (ICP 5, D2C/Ecomm)
+2026-02-19 01:13:14,116 [INFO] [Sreejith Moolayil] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,117 [INFO] [93/200] Ankur Warikoo @ Nearbuy (ICP 5, SaaS/B2B)
+2026-02-19 01:13:14,122 [INFO] [94/200] Shreya Mishra @ Phool.co (ICP 5, SaaS/B2B)
+2026-02-19 01:13:14,126 [INFO] [95/200] Vikas Garg @ Beato (ICP 5, D2C/Ecomm)
+2026-02-19 01:13:14,126 [INFO] [Vikas Garg] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,127 [INFO] [96/200] Sushanto Mitra @ Lead Angels (ICP 4, VC/PE)
+2026-02-19 01:13:14,128 [INFO] [Sushanto Mitra] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,129 [INFO] [97/200] Karthik Reddy @ Blume Ventures (ICP 4, VC/PE)
+2026-02-19 01:13:14,134 [INFO] [98/200] Neeraj Bansal @ KPMG India (ICP 4, SaaS/B2B)
+2026-02-19 01:13:14,136 [INFO] [Neeraj Bansal] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,136 [INFO] [99/200] Sanjay Swamy @ Prime Venture Partners (ICP 4, VC/PE)
+2026-02-19 01:13:14,143 [INFO] [100/200] Rajesh Sawhney @ GSF Accelerator (ICP 4, VC/PE)
+2026-02-19 01:13:14,175 [INFO] [101/200] Dhruv Toshniwal @ Letstransport (ICP 4, Mobility)
+2026-02-19 01:13:14,175 [INFO] [Dhruv Toshniwal] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,178 [INFO] [102/200] Ashwin Damera @ Eruditus (ICP 4, Edtech)
+2026-02-19 01:13:14,187 [INFO] [103/200] Abhimanyu Saxena @ Scaler Academy (ICP 4, Edtech)
+2026-02-19 01:13:14,189 [INFO] [Abhimanyu Saxena] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,191 [INFO] [104/200] Lakshmi Balasubramanian @ Flipkart (ICP 4, SaaS/B2B)
+2026-02-19 01:13:14,203 [INFO] [105/200] Dr. Rohini Srivathsa @ Microsoft India and South Asia (ICP 4, DeepTech/AI)
+2026-02-19 01:13:14,205 [INFO] [Dr. Rohini Srivathsa] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,206 [INFO] [106/200] Dr. Sreedhara Panicker Somanath @ Indian Space Research Organisation (ISRO) (ICP 4, DeepTech/AI)
+2026-02-19 01:13:14,208 [INFO] [Dr. Sreedhara Panicker Somanath] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,209 [INFO] [107/200] Bhavish Aggarwal @ Ola (ICP 4, Mobility)
+2026-02-19 01:13:14,218 [INFO] [108/200] Ronnie Screwvala @ upGrad & Swades Foundation (ICP 4, Edtech)
+2026-02-19 01:13:14,219 [INFO] [Ronnie Screwvala] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,220 [INFO] [109/200] Neha Aggarwal @ Classplus (ICP 4, Edtech)
+2026-02-19 01:13:14,220 [INFO] [Neha Aggarwal] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,221 [INFO] [110/200] Nikhil Anand @ SaaSify (ICP 4, SaaS/B2B)
+2026-02-19 01:13:14,221 [INFO] [Nikhil Anand] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,221 [INFO] [111/200] Bharat Garg @ BrowserStack (ICP 4, SaaS/B2B)
+2026-02-19 01:13:14,226 [INFO] [112/200] Kalyani Nair @ Licious (ICP 4, D2C/Ecomm)
+2026-02-19 01:13:14,226 [INFO] [Kalyani Nair] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,227 [INFO] [113/200] Parag Dhol @ Inventus Capital India (ICP 4, VC/PE)
+2026-02-19 01:13:14,232 [INFO] [114/200] Jayendra Patel @ Meesho (ICP 4, D2C/Ecomm)
+2026-02-19 01:13:14,238 [INFO] [115/200] Vani Kola @ Kalaari Capital (ICP 4, VC/PE)
+2026-02-19 01:13:14,248 [INFO] [116/200] Shailendra Singh @ Peak XV Partners (ICP 4, VC/PE)
+2026-02-19 01:13:14,253 [INFO] [117/200] Sonal Saldanha @ Endeavor India (ICP 4, VC/PE)
+2026-02-19 01:13:14,253 [INFO] [Sonal Saldanha] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,254 [INFO] [118/200] Shubhranshu Singh @ Tata Motors (ICP 4, SaaS/B2B)
+2026-02-19 01:13:14,254 [INFO] [Shubhranshu Singh] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,255 [INFO] [119/200] Tarun Mehta @ Ather Energy (ICP 4, DeepTech/AI)
+2026-02-19 01:13:14,261 [INFO] [120/200] Vijay Anand @ Sarvam AI (ICP 4, DeepTech/AI)
+2026-02-19 01:13:14,267 [INFO] [121/200] Mihir Khanna @ Mamaearth (ICP 4, D2C/Ecomm)
+2026-02-19 01:13:14,267 [INFO] [Mihir Khanna] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,268 [INFO] [122/200] Shyam Menon @ Stellaris Venture Partners (ICP 4, VC/PE)
+2026-02-19 01:13:14,269 [INFO] [Shyam Menon] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,270 [INFO] [123/200] Poornima Rajan @ Mad Street Den (ICP 4, DeepTech/AI)
+2026-02-19 01:13:14,270 [INFO] [Poornima Rajan] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,271 [INFO] [124/200] Aishwarya Srinivasan @ IDFC First Bank (ICP 4, SaaS/B2B)
+2026-02-19 01:13:14,276 [INFO] [125/200] Saurav Jha @ Detect Technologies (ICP 4, DeepTech/AI)
+2026-02-19 01:13:14,291 [INFO] [126/200] Priya Mathur @ Mphasis (ICP 4, DeepTech/AI)
+2026-02-19 01:13:14,299 [INFO] [127/200] Siddharth Roy @ The Moms Co (ICP 4, D2C/Ecomm)
+2026-02-19 01:13:14,299 [INFO] [Siddharth Roy] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,299 [INFO] [128/200] Vivek Sharma @ Nykaa (ICP 4, D2C/Ecomm)
+2026-02-19 01:13:14,300 [INFO] [Vivek Sharma] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,300 [INFO] [129/200] Meghna Patel @ Chargebee (ICP 4, SaaS/B2B)
+2026-02-19 01:13:14,300 [INFO] [Meghna Patel] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,301 [INFO] [130/200] Siddarth Pai @ 3one4 Capital (ICP 4, VC/PE)
+2026-02-19 01:13:14,301 [INFO] [Siddarth Pai] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,301 [INFO] [131/200] Vishal Dhupar @ NVIDIA (ICP 4, DeepTech/AI)
+2026-02-19 01:13:14,302 [INFO] [Vishal Dhupar] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,302 [INFO] [132/200] Sharad Sanghi @ Neysa (ICP 4, DeepTech/AI)
+2026-02-19 01:13:14,309 [INFO] [133/200] Pooja Kapoor @ Zomentum (ICP 4, SaaS/B2B)
+2026-02-19 01:13:14,311 [INFO] [Pooja Kapoor] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,312 [INFO] [134/200] Kanika Tekriwal @ JetSetGo (ICP 4, Mobility)
+2026-02-19 01:13:14,318 [INFO] [135/200] Pallavi Tyagi @ MoEngage (ICP 4, SaaS/B2B)
+2026-02-19 01:13:14,318 [INFO] [Pallavi Tyagi] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,318 [INFO] [136/200] Ravi Shankar @ Salesken (ICP 4, SaaS/B2B)
+2026-02-19 01:13:14,319 [INFO] [Ravi Shankar] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,319 [INFO] [137/200] Sundar Viswanathan @ Intel Capital (ICP 4, VC/PE)
+2026-02-19 01:13:14,323 [INFO] [138/200] Navneet Singh @ Ventive.ai (ICP 4, DeepTech/AI)
+2026-02-19 01:13:14,327 [INFO] [139/200] Lavanya Ashok @ Razorpay (ICP 4, Fintech)
+2026-02-19 01:13:14,332 [INFO] [140/200] Somasekhar Sundaresan @ JS & Associates (ICP 4, SaaS/B2B)
+2026-02-19 01:13:14,333 [INFO] [Somasekhar Sundaresan] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,333 [INFO] [141/200] Kunal Khattar @ AdvantEdge Founders (ICP 4, VC/PE)
+2026-02-19 01:13:14,339 [INFO] [142/200] Pradeep MS @ Juspay (ICP 4, SaaS/B2B)
+2026-02-19 01:13:14,339 [INFO] [Pradeep MS] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,340 [INFO] [143/200] Krishnamurthy Subramanian @ Ola Krutrim (ICP 4, DeepTech/AI)
+2026-02-19 01:13:14,341 [INFO] [Krishnamurthy Subramanian] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,342 [INFO] [144/200] Arshad Chaudhary @ Bigbasket (ICP 4, SaaS/B2B)
+2026-02-19 01:13:14,343 [INFO] [Arshad Chaudhary] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,344 [INFO] [145/200] Prachi Mishra @ Swiggy (ICP 4, D2C/Ecomm)
+2026-02-19 01:13:14,344 [INFO] [Prachi Mishra] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,345 [INFO] [146/200] Sanjay Salunkhe @ Imarticus Learning (ICP 4, Edtech)
+2026-02-19 01:13:14,367 [INFO] [147/200] Prateek Maheshwari @ Physics Wallah (ICP 4, Edtech)
+2026-02-19 01:13:14,371 [INFO] [Prateek Maheshwari] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,373 [INFO] [148/200] Sudhir Sethi @ Chiratae Ventures (ICP 4, VC/PE)
+2026-02-19 01:13:14,384 [INFO] [149/200] Aashish Solanki @ Curefit (ICP 4, SaaS/B2B)
+2026-02-19 01:13:14,387 [INFO] [150/200] Nikhil Barshikar @ Imarticus (ICP 4, Edtech)
+2026-02-19 01:13:14,403 [INFO] [151/200] Yagnesh Sanghrajka @ 100X.VC (ICP 4, VC/PE)
+2026-02-19 01:13:14,403 [INFO] [Yagnesh Sanghrajka] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,403 [INFO] [152/200] Smita Deorah @ LEAD School (ICP 4, Edtech)
+2026-02-19 01:13:14,404 [INFO] [Smita Deorah] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,404 [INFO] [153/200] Beas Dev Ralhan @ Next Education (ICP 4, Edtech)
+2026-02-19 01:13:14,409 [INFO] [154/200] Keerthi Reddy @ Zypp Electric (ICP 4, Mobility)
+2026-02-19 01:13:14,409 [INFO] [Keerthi Reddy] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,409 [INFO] [155/200] Mohit Bhatnagar @ Sequoia India (ICP 4, VC/PE)
+2026-02-19 01:13:14,411 [INFO] [156/200] Nandini Mansinghka @ Mumbai Angels Network (ICP 4, VC/PE)
+2026-02-19 01:13:14,414 [INFO] [Nandini Mansinghka] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,416 [INFO] [157/200] Siddharth Sharma @ AWS India (ICP 4, SaaS/B2B)
+2026-02-19 01:13:14,417 [INFO] [Siddharth Sharma] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,417 [INFO] [158/200] Anmol Jaggi @ BluSmart Mobility (ICP 4, Mobility)
+2026-02-19 01:13:14,417 [INFO] [Anmol Jaggi] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,421 [INFO] [159/200] Shalini Pillay @ KPMG India (ICP 4, SaaS/B2B)
+2026-02-19 01:13:14,422 [INFO] [Shalini Pillay] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,423 [INFO] [160/200] Yamini Bhat @ Vymo (ICP 4, Edtech)
+2026-02-19 01:13:14,433 [INFO] [161/200] Padmaja Ruparel @ Indian Angel Network (ICP 4, VC/PE)
+2026-02-19 01:13:14,434 [INFO] [Padmaja Ruparel] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,434 [INFO] [162/200] Sanjay Mehta @ 100X.VC (ICP 4, VC/PE)
+2026-02-19 01:13:14,439 [INFO] [163/200] Amit Lakhotia @ Park+ (ICP 4, Mobility)
+2026-02-19 01:13:14,447 [INFO] [164/200] Mekin Maheshwari @ Udhyam Learning Foundation (ICP 4, Edtech)
+2026-02-19 01:13:14,454 [INFO] [165/200] Bindisha Sarang @ Paytm Insider (ICP 4, Fintech)
+2026-02-19 01:13:14,454 [INFO] [Bindisha Sarang] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,455 [INFO] [166/200] Ashutosh Sharma @ Prosus Ventures (ICP 3, VC/PE)
+2026-02-19 01:13:14,462 [INFO] [167/200] Nitin Sharma @ Antler India (ICP 3, VC/PE)
+2026-02-19 01:13:14,476 [INFO] [168/200] Roshni Mistry @ Lightspeed India (ICP 3, VC/PE)
+2026-02-19 01:13:14,490 [INFO] [169/200] Priya Mohan @ upGrad (ICP 3, Edtech)
+2026-02-19 01:13:14,499 [INFO] [170/200] Mansi Jain @ Spinny (ICP 3, Mobility)
+2026-02-19 01:13:14,499 [INFO] [Mansi Jain] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,500 [INFO] [171/200] Sharad Sharma @ iSPIRT Foundation (ICP 3, Government)
+2026-02-19 01:13:14,501 [WARNING] [Sharad Sharma] LOW confidence: ["Generic phrases detected: ['ecosystem']", "Output doesn't reference contact's company or role — too generic", 'LLM self-reported LOW confidence']
+2026-02-19 01:13:14,502 [INFO] [172/200] Manish Agarwal @ Nexus Venture Partners (ICP 3, VC/PE)
+2026-02-19 01:13:14,528 [INFO] [173/200] Ramakrishna Reddy @ Ideaspring Capital (ICP 3, VC/PE)
+2026-02-19 01:13:14,543 [INFO] [174/200] Gauri Shankar @ Matrix Partners India (ICP 3, VC/PE)
+2026-02-19 01:13:14,544 [INFO] [Gauri Shankar] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,545 [INFO] [175/200] Arun Natarajan @ Ventureintelligence (ICP 3, VC/PE)
+2026-02-19 01:13:14,566 [INFO] [176/200] Ishita Dalmia @ Omidyar Network India (ICP 3, VC/PE)
+2026-02-19 01:13:14,567 [INFO] [Ishita Dalmia] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,567 [INFO] [177/200] Sunil Goyal @ YourNest Ventures (ICP 3, VC/PE)
+2026-02-19 01:13:14,580 [INFO] [178/200] Aditi Avasthi @ Blume Ventures (ICP 3, VC/PE)
+2026-02-19 01:13:14,591 [INFO] [179/200] Mukul Arora @ Elevation Capital (ICP 3, VC/PE)
+2026-02-19 01:13:14,602 [INFO] [180/200] Sangeeta Gupta @ NASSCOM (ICP 3, Government)
+2026-02-19 01:13:14,604 [WARNING] [Sangeeta Gupta] LOW confidence: ["Generic phrases detected: ['ecosystem']", "Output doesn't reference contact's company or role — too generic", 'LLM self-reported LOW confidence']
+2026-02-19 01:13:14,605 [INFO] [181/200] Aparna Ballakur @ Google for Startups India (ICP 3, SaaS/B2B)
+2026-02-19 01:13:14,606 [INFO] [Aparna Ballakur] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,607 [INFO] [182/200] Rajan Anandan @ Sequoia Capital (ICP 3, VC/PE)
+2026-02-19 01:13:14,607 [INFO] [Rajan Anandan] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,608 [INFO] [183/200] Shekhar Kirani @ Accel India (ICP 3, VC/PE)
+2026-02-19 01:13:14,611 [INFO] [184/200] Prashanth Prakash @ Accel India (ICP 3, VC/PE)
+2026-02-19 01:13:14,618 [INFO] [185/200] Utsav Somani @ AngelList India (ICP 3, VC/PE)
+2026-02-19 01:13:14,626 [INFO] [186/200] Prayank Swaroop @ Accel India (ICP 3, VC/PE)
+2026-02-19 01:13:14,635 [INFO] [187/200] Rajiv Mehta @ Wipro Ventures (ICP 3, VC/PE)
+2026-02-19 01:13:14,635 [INFO] [Rajiv Mehta] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,636 [INFO] [188/200] Rekha Menon @ Accenture India (ICP 3, SaaS/B2B)
+2026-02-19 01:13:14,636 [INFO] [Rekha Menon] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,638 [INFO] [189/200] Ravi Adusumalli @ SAIF Partners (ICP 3, VC/PE)
+2026-02-19 01:13:14,642 [INFO] [190/200] Mridul Arora @ Saama Capital (ICP 3, VC/PE)
+2026-02-19 01:13:14,649 [INFO] [191/200] Asha Jadeja @ Motwani Jadeja Foundation (ICP 3, VC/PE)
+2026-02-19 01:13:14,657 [INFO] [192/200] Devendra Parulekar @ SQream Technologies (ICP 3, DeepTech/AI)
+2026-02-19 01:13:14,657 [INFO] [Devendra Parulekar] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,658 [INFO] [193/200] Anurag Ramdasan @ 3one4 Capital (ICP 3, VC/PE)
+2026-02-19 01:13:14,667 [INFO] [194/200] Arjun Malhotra @ Dunzo (ICP 3, Mobility)
+2026-02-19 01:13:14,667 [INFO] [Arjun Malhotra] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,669 [INFO] [195/200] Arpit Agarwal @ Blume Ventures (ICP 3, VC/PE)
+2026-02-19 01:13:14,675 [INFO] [196/200] Shri Amitabh Kant @ Government of India (ICP 2, Government)
+2026-02-19 01:13:14,676 [WARNING] [Shri Amitabh Kant] LOW confidence: ["Generic phrases detected: ['ecosystem']", 'LLM self-reported LOW confidence']
+2026-02-19 01:13:14,676 [INFO] [197/200] Shankar Narayanan @ Carlyle Group (ICP 2, VC/PE)
+2026-02-19 01:13:14,677 [INFO] [Shankar Narayanan] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,678 [INFO] [198/200] Pawan Munjal @ Hero Vired (ICP 2, Edtech)
+2026-02-19 01:13:14,679 [INFO] [Pawan Munjal] MEDIUM confidence: ["Output doesn't reference contact's company or role — too generic"]
+2026-02-19 01:13:14,680 [INFO] [199/200] Alka Nangia Arora @ Ministry of Commerce (ICP 2, Government)
+2026-02-19 01:13:14,682 [WARNING] [Alka Nangia Arora] LOW confidence: ["Generic phrases detected: ['ecosystem']", "Output doesn't reference contact's company or role — too generic", 'LLM self-reported LOW confidence']
+2026-02-19 01:13:14,683 [INFO] [200/200] Anil Agrawal @ Competition Commission of India (ICP 1, Government)
+2026-02-19 01:13:14,684 [WARNING] [Anil Agrawal] LOW confidence: ["Generic phrases detected: ['ecosystem']", 'LLM self-reported LOW confidence']
+2026-02-19 01:22:22,186 [INFO] Loading: data/enriched/techsparks_enriched.csv
+2026-02-19 01:22:22,203 [INFO] Generating personas for 200 contacts | Model: anthropic/claude-3-haiku | Version: v1.2 | Dry run: False
+2026-02-19 01:22:22,204 [INFO] [1/200] Mabel Chacko @ Open Financial Technologies (ICP 5, Fintech)
+2026-02-19 01:24:09,310 [INFO] Loading: data/enriched/techsparks_enriched.csv
+2026-02-19 01:24:09,314 [INFO] Processing top 5 contacts by ICP score
+2026-02-19 01:24:09,314 [INFO] Generating personas for 5 contacts | Model: anthropic/claude-3-haiku | Version: v1.2 | Dry run: False
+2026-02-19 01:24:09,315 [INFO] [1/5] Mabel Chacko @ Open Financial Technologies (ICP 5, Fintech)
+2026-02-19 01:24:16,005 [INFO] [2/5] Subbu Iyer @ Giggr Technologies (ICP 5, SaaS/B2B)
+2026-02-19 01:24:21,198 [INFO] [3/5] Kunal Bahl @ Snapdeal & Titan Capital (ICP 5, D2C/Ecomm)
+2026-02-19 01:24:26,287 [INFO] [4/5] Ananth Narayanan @ Mensa Brands (ICP 5, D2C/Ecomm)
+2026-02-19 01:24:33,202 [INFO] [Ananth Narayanan] MEDIUM confidence: ["Generic phrases detected: ['dynamic']"]
+2026-02-19 01:24:33,203 [INFO] [5/5] Lalit Keshre @ Groww (ICP 5, Fintech)
