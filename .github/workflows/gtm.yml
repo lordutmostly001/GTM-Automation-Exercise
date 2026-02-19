@@ -48,3 +48,10 @@ jobs:
           echo "=== STEP 7: Outreach Message Builder ==="
           python outreach/message_builder.py --limit 10
 
+      - name: Upload GTM CSV outputs
+        uses: actions/upload-artifact@v3
+        with:
+          name: gtm-csv
+          path: |
+            data/**/*.csv
+            *.csv
