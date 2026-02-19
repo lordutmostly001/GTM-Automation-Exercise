@@ -29,22 +29,16 @@ jobs:
         run: |
           echo "=== STEP 1: Scraping TechSparks ==="
           python scrapers/techsparks_scraper.py
-
           echo "=== STEP 2: Apollo Enrichment ==="
           python enrichment/apollo_enricher.py --limit 10
-
           echo "=== STEP 3: ICP Scoring ==="
           python enrichment/icp_scorer.py
-
           echo "=== STEP 4: Deduplication ==="
           python enrichment/deduplicator.py
-
           echo "=== STEP 5: Persona Generation (Claude) ==="
           python persona_generation/persona_generator.py --limit 10
-
           echo "=== STEP 6: Lead Routing ==="
           python routing/lead_router.py
-
           echo "=== STEP 7: Outreach Message Builder ==="
           python outreach/message_builder.py --limit 10
 
@@ -55,9 +49,14 @@ jobs:
           path: |
             data/**/*.csv
             *.csv
+
       - name: Notify Make (CSV ready)
         run: |
-          curl -X POST https://hook.us2.make.com/yt9rrfk8fin2xnyjuj1yj47z31o8kbwq
-
-
-      
+          curl -X POST https://hook.us2.make.com/yt9rrfk8fin2xnyjuj1yj47z31o8kbwq \
+            -H "Content-Type: application/json" \
+            -d '{
+              "run_id": "${{ github.run_id }}",
+              "repo": "${{ github.repository }}",
+              "artifact_name": "gtm-csv",
+              "status": "success"
+            }'
