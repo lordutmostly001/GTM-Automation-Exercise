@@ -72,6 +72,6 @@ jobs:
       - name: Notify Make (CSV ready)
         run: |
           sleep 15
-          curl -X POST https://hook.us2.make.com/yt9rrfk8fin2xnyjuj1yj47z31o8kbwq \
+          curl -X POST https://hook.us2.make.com/iwnb42rgt129sy3fvlxex5h41n0twzpe \
             -H "Content-Type: application/json" \
             -d "{\"status\": \"success\"}"
