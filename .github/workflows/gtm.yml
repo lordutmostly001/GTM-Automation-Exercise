@@ -40,7 +40,7 @@ jobs:
           python enrichment/deduplicator.py
 
           echo "=== STEP 5: Persona Generation (Claude) ==="
-          python persona_generation/persona_generator.py
+          python persona_generation/persona_generator.py --limit 10
 
           echo "=== STEP 6: Lead Routing ==="
           python routing/lead_router.py
