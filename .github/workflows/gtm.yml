@@ -3,6 +3,7 @@ name: GTM Automation
 on:
   repository_dispatch:
     types: [run-gtm]
+  workflow_dispatch:
 
 jobs:
   run_pipeline:
@@ -42,21 +43,22 @@ jobs:
           echo "=== STEP 7: Outreach Message Builder ==="
           python outreach/message_builder.py --limit 10
 
+      - name: Remove checkpoint files
+        run: find data/ -name "*_checkpoint_*.csv" -delete
+
       - name: Upload GTM CSV outputs
         uses: actions/upload-artifact@v4
         with:
           name: gtm-csv
           path: |
-            data/**/*.csv
-            *.csv
+            data/raw/techsparks_contacts_200.csv
+            data/enriched/techsparks_enriched.csv
+            data/final/techsparks_master.csv
+            data/final/techsparks_outreach_ready.csv
+            data/final/techsparks_routed.csv
 
       - name: Notify Make (CSV ready)
         run: |
           curl -X POST https://hook.us2.make.com/yt9rrfk8fin2xnyjuj1yj47z31o8kbwq \
             -H "Content-Type: application/json" \
-            -d '{
-              "run_id": "${{ github.run_id }}",
-              "repo": "${{ github.repository }}",
-              "artifact_name": "gtm-csv",
-              "status": "success"
-            }'
+            -d "{\"run_id\": \"${{ github.run_id }}\", \"repo\": \"${{ github.repository }}\", \"artifact_name\": \"gtm-csv\", \"status\": \"success\"}"
