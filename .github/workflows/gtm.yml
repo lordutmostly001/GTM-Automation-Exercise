@@ -49,7 +49,7 @@ jobs:
           python outreach/message_builder.py --limit 10
 
       - name: Upload GTM CSV outputs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: gtm-csv
           path: |
