@@ -55,3 +55,9 @@ jobs:
           path: |
             data/**/*.csv
             *.csv
+      - name: Notify Make (CSV ready)
+        run: |
+          curl -X POST https://hook.us2.make.com/yt9rrfk8fin2xnyjuj1yj47z31o8kbwq
+
+
+      
