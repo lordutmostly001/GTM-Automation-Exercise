@@ -46,4 +46,5 @@ jobs:
           python routing/lead_router.py
 
           echo "=== STEP 7: Outreach Message Builder ==="
-          python outreach/message_builder.py
+          python outreach/message_builder.py --limit 10
+
