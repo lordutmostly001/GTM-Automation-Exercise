@@ -31,7 +31,7 @@ jobs:
           python scrapers/techsparks_scraper.py
 
           echo "=== STEP 2: Apollo Enrichment ==="
-          python enrichment/apollo_enricher.py
+          python enrichment/apollo_enricher.py --limit 10
 
           echo "=== STEP 3: ICP Scoring ==="
           python enrichment/icp_scorer.py
