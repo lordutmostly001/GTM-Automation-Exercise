@@ -235,13 +235,6 @@ def generate_personas(
         contact.update(validated)
         results.append(contact)
 
-        # Checkpointing disabled for CI runs
-        # Set SAVE_CHECKPOINTS = True only for local debugging
-        SAVE_CHECKPOINTS = False
-            if SAVE_CHECKPOINTS and (i + 1) % 25 == 0:
-              checkpoint = output_path.replace(".csv", f"_checkpoint_{i+1}.csv")
-              pd.DataFrame(results).to_csv(checkpoint, index=False)
-              log.info(f"  💾 Checkpoint: {checkpoint}")
               
     # ── Save final output ──────────────────────────────────────────────────
     final_df = pd.DataFrame(results)
