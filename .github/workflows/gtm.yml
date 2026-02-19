@@ -9,23 +9,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
 
-    - name: Install dependencies
-      run: pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-    - name: Run GTM pipeline
-      run: |
-        python scrapers/techsparks_scraper.py
-        python enrichment/apollo_enricher.py
-        python enrichment/icp_scorer.py
-        python enrichment/deduplicator.py
-        python persona_generation/persona_generator.py
-        python routing/lead_router.py
-        python outreach/message_builder.py
+      - name: Run GTM pipeline
+        env:
+          APOLLO_API_KEY: ${{ secrets.APOLLO_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          echo "=== STEP 1: Scraping TechSparks ==="
+          python scrapers/techsparks_scraper.py
+
+          echo "=== STEP 2: Apollo Enrichment ==="
+          python enrichment/apollo_enricher.py
+
+          echo "=== STEP 3: ICP Scoring ==="
+          python enrichment/icp_scorer.py
+
+          echo "=== STEP 4: Deduplication ==="
+          python enrichment/deduplicator.py
+
+          echo "=== STEP 5: Persona Generation (Claude) ==="
+          python persona_generation/persona_generator.py
+
+          echo "=== STEP 6: Lead Routing ==="
+          python routing/lead_router.py
+
+          echo "=== STEP 7: Outreach Message Builder ==="
+          python outreach/message_builder.py
