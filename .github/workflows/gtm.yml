@@ -49,16 +49,15 @@ jobs:
       - name: Remove checkpoint files
         run: find data/ -name "*_checkpoint_*.csv" -delete
 
-      # ✅ Commit final CSVs to repo (for Make raw download)
-      - name: Commit final CSVs to repo
+      - name: Commit CSVs to repo
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
+          git add data/enriched/*.csv
           git add data/final/*.csv
-          git commit -m "Update GTM outputs" || echo "Nothing to commit"
+          git commit -m "Update GTM outputs [skip ci]" || echo "Nothing to commit"
           git push
 
-      # (Optional) keep artifact upload if you still want manual downloads
       - name: Upload GTM CSV outputs
         uses: actions/upload-artifact@v4
         with:
@@ -69,3 +68,10 @@ jobs:
             data/final/techsparks_master.csv
             data/final/techsparks_outreach_ready.csv
             data/final/techsparks_routed.csv
+
+      - name: Notify Make (CSV ready)
+        run: |
+          sleep 15
+          curl -X POST https://hook.us2.make.com/yt9rrfk8fin2xnyjuj1yj47z31o8kbwq \
+            -H "Content-Type: application/json" \
+            -d "{\"status\": \"success\"}"
