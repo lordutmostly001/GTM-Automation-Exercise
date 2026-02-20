@@ -1,0 +1,205 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" width="960" height="620" font-family="Arial, sans-serif">
+
+  <!-- Background -->
+  <rect width="960" height="620" fill="#F8F9FA"/>
+
+  <!-- Title -->
+  <text x="480" y="32" text-anchor="middle" font-size="17" font-weight="bold" fill="#1A1A2E">TechSparks 2024 — GTM Automation Pipeline</text>
+  <text x="480" y="50" text-anchor="middle" font-size="10" fill="#888">200 contacts · Scrape → Enrich → AI Persona → Message → Route → Outreach</text>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- ROW 1: DATA PIPELINE -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <text x="16" y="80" font-size="9" font-weight="bold" fill="#3498DB">① DATA PIPELINE</text>
+
+  <!-- Scrape -->
+  <rect x="16" y="88" width="148" height="68" rx="8" fill="#EBF5FB" stroke="#3498DB" stroke-width="1.5"/>
+  <text x="90" y="110" text-anchor="middle" font-size="10" font-weight="bold" fill="#2980B9">Scrape</text>
+  <text x="90" y="125" text-anchor="middle" font-size="9" fill="#555">Python · Selenium</text>
+  <text x="90" y="139" text-anchor="middle" font-size="9" fill="#555">20 real + 180 mock</text>
+  <text x="90" y="150" text-anchor="middle" font-size="8" fill="#27AE60">✓ Automated</text>
+
+  <line x1="164" y1="122" x2="180" y2="122" stroke="#AAA" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Enrich -->
+  <rect x="180" y="88" width="148" height="68" rx="8" fill="#FEF9E7" stroke="#F39C12" stroke-width="1.5"/>
+  <text x="254" y="110" text-anchor="middle" font-size="10" font-weight="bold" fill="#D68910">Enrich</text>
+  <text x="254" y="125" text-anchor="middle" font-size="9" fill="#555">Apollo.io · ICP Scorer</text>
+  <text x="254" y="139" text-anchor="middle" font-size="9" fill="#555">135 matches · 111 emails</text>
+  <text x="254" y="150" text-anchor="middle" font-size="8" fill="#27AE60">✓ Automated</text>
+
+  <line x1="328" y1="122" x2="344" y2="122" stroke="#AAA" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- AI Persona -->
+  <rect x="344" y="88" width="148" height="68" rx="8" fill="#E8F8F5" stroke="#1ABC9C" stroke-width="1.5"/>
+  <text x="418" y="110" text-anchor="middle" font-size="10" font-weight="bold" fill="#148F77">AI Persona</text>
+  <text x="418" y="125" text-anchor="middle" font-size="9" fill="#555">Claude 3 Haiku · OpenRouter</text>
+  <text x="418" y="139" text-anchor="middle" font-size="9" fill="#555">195 HIGH · 5 LOW → review</text>
+  <text x="418" y="150" text-anchor="middle" font-size="8" fill="#27AE60">✓ Automated</text>
+
+  <line x1="492" y1="122" x2="508" y2="122" stroke="#AAA" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Message Build -->
+  <rect x="508" y="88" width="148" height="68" rx="8" fill="#F4ECF7" stroke="#8E44AD" stroke-width="1.5"/>
+  <text x="582" y="110" text-anchor="middle" font-size="10" font-weight="bold" fill="#7D3C98">Message Build</text>
+  <text x="582" y="125" text-anchor="middle" font-size="9" fill="#555">3 variants A / B / C</text>
+  <text x="582" y="139" text-anchor="middle" font-size="9" fill="#555">193 outreach-ready</text>
+  <text x="582" y="150" text-anchor="middle" font-size="8" fill="#27AE60">✓ Automated</text>
+
+  <line x1="656" y1="122" x2="672" y2="122" stroke="#AAA" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Route -->
+  <rect x="672" y="88" width="148" height="68" rx="8" fill="#FDEDEC" stroke="#E74C3C" stroke-width="1.5"/>
+  <text x="746" y="110" text-anchor="middle" font-size="10" font-weight="bold" fill="#C0392B">Route</text>
+  <text x="746" y="125" text-anchor="middle" font-size="9" fill="#555">SDR · AE · Senior AE</text>
+  <text x="746" y="139" text-anchor="middle" font-size="9" fill="#555">179 assigned · 92 leadership</text>
+  <text x="746" y="150" text-anchor="middle" font-size="8" fill="#27AE60">✓ Automated</text>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- ROW 2: AUTOMATION LAYER -->
+  <!-- ══════════════════════════════════════════════════════ -->
+
+  <!-- Divider -->
+  <line x1="16" y1="178" x2="944" y2="178" stroke="#DDD" stroke-width="1" stroke-dasharray="5,3"/>
+  <text x="16" y="196" font-size="9" font-weight="bold" fill="#8E44AD">② AUTOMATION LAYER</text>
+
+  <!-- GitHub Actions -->
+  <rect x="16" y="204" width="200" height="80" rx="8" fill="#E8F4FD" stroke="#3498DB" stroke-width="1.5"/>
+  <text x="116" y="225" text-anchor="middle" font-size="10" font-weight="bold" fill="#2980B9">GitHub Actions (CI/CD)</text>
+  <text x="116" y="241" text-anchor="middle" font-size="9" fill="#555">Runs 7-step Python pipeline</text>
+  <text x="116" y="255" text-anchor="middle" font-size="9" fill="#555">Commits CSVs → repo</text>
+  <text x="116" y="269" text-anchor="middle" font-size="9" fill="#555">Sends webhook to Make</text>
+  <text x="116" y="279" text-anchor="middle" font-size="8" fill="#27AE60">✓ Fully automated</text>
+
+  <line x1="216" y1="244" x2="236" y2="244" stroke="#AAA" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Make.com -->
+  <rect x="236" y="204" width="200" height="80" rx="8" fill="#F0E6FF" stroke="#8E44AD" stroke-width="1.5"/>
+  <text x="336" y="225" text-anchor="middle" font-size="10" font-weight="bold" fill="#7D3C98">Make.com (No-code)</text>
+  <text x="336" y="241" text-anchor="middle" font-size="9" fill="#555">Webhook trigger</text>
+  <text x="336" y="255" text-anchor="middle" font-size="9" fill="#555">Downloads 4 CSVs from repo</text>
+  <text x="336" y="269" text-anchor="middle" font-size="9" fill="#555">Parses + uploads to Sheets</text>
+  <text x="336" y="279" text-anchor="middle" font-size="8" fill="#27AE60">✓ Fully automated</text>
+
+  <line x1="436" y1="244" x2="456" y2="244" stroke="#AAA" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Google Sheets -->
+  <rect x="456" y="204" width="200" height="80" rx="8" fill="#E9F7EF" stroke="#27AE60" stroke-width="1.5"/>
+  <text x="556" y="225" text-anchor="middle" font-size="10" font-weight="bold" fill="#1E8449">Google Sheets</text>
+  <text x="556" y="241" text-anchor="middle" font-size="9" fill="#555">5 tabs: Raw · Enriched · Master</text>
+  <text x="556" y="255" text-anchor="middle" font-size="9" fill="#555">Outreach · Routed</text>
+  <text x="556" y="269" text-anchor="middle" font-size="9" fill="#555">Live formula dashboard</text>
+  <text x="556" y="279" text-anchor="middle" font-size="8" fill="#27AE60">✓ Auto-populated</text>
+
+  <line x1="656" y1="244" x2="676" y2="244" stroke="#AAA" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- n8n -->
+  <rect x="676" y="204" width="200" height="80" rx="8" fill="#FEF9E7" stroke="#F39C12" stroke-width="1.5"/>
+  <text x="776" y="225" text-anchor="middle" font-size="10" font-weight="bold" fill="#D68910">n8n (Self-hosted)</text>
+  <text x="776" y="241" text-anchor="middle" font-size="9" fill="#555">Workflow 01: Persona gen</text>
+  <text x="776" y="255" text-anchor="middle" font-size="9" fill="#555">Workflow 02: Outreach seq</text>
+  <text x="776" y="269" text-anchor="middle" font-size="9" fill="#555">Workflow 03: Lead routing</text>
+  <text x="776" y="279" text-anchor="middle" font-size="8" fill="#27AE60">✓ Fully automated</text>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- ROW 3: OUTREACH SEQUENCE -->
+  <!-- ══════════════════════════════════════════════════════ -->
+
+  <line x1="16" y1="306" x2="944" y2="306" stroke="#DDD" stroke-width="1" stroke-dasharray="5,3"/>
+  <text x="16" y="324" font-size="9" font-weight="bold" fill="#E74C3C">③ OUTREACH SEQUENCE (5 touches)</text>
+
+  <!-- Touch 1 -->
+  <rect x="16" y="332" width="170" height="75" rx="8" fill="#EBF5FB" stroke="#3498DB" stroke-width="1.5"/>
+  <text x="101" y="352" text-anchor="middle" font-size="10" font-weight="bold" fill="#2980B9">T−7: LinkedIn Connect</text>
+  <text x="101" y="367" text-anchor="middle" font-size="9" fill="#555">Personalised note</text>
+  <text x="101" y="381" text-anchor="middle" font-size="9" fill="#555">Built by n8n</text>
+  <text x="101" y="395" text-anchor="middle" font-size="8" fill="#E67E22">⚠ Semi-manual (ToS)</text>
+
+  <line x1="186" y1="369" x2="202" y2="369" stroke="#AAA" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Touch 2 -->
+  <rect x="202" y="332" width="170" height="75" rx="8" fill="#E8F8F5" stroke="#1ABC9C" stroke-width="1.5"/>
+  <text x="287" y="352" text-anchor="middle" font-size="10" font-weight="bold" fill="#148F77">T+0: LinkedIn DM</text>
+  <text x="287" y="367" text-anchor="middle" font-size="9" fill="#555">Post connection accept</text>
+  <text x="287" y="381" text-anchor="middle" font-size="9" fill="#555">Variant A / B / C</text>
+  <text x="287" y="395" text-anchor="middle" font-size="8" fill="#E67E22">⚠ Semi-manual (ToS)</text>
+
+  <line x1="372" y1="369" x2="388" y2="369" stroke="#AAA" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Touch 3 -->
+  <rect x="388" y="332" width="170" height="75" rx="8" fill="#FEF9E7" stroke="#F39C12" stroke-width="1.5"/>
+  <text x="473" y="352" text-anchor="middle" font-size="10" font-weight="bold" fill="#D68910">T+5: Email</text>
+  <text x="473" y="367" text-anchor="middle" font-size="9" fill="#555">Instantly.ai · plain text</text>
+  <text x="473" y="381" text-anchor="middle" font-size="9" fill="#555">YC-backed co framing</text>
+  <text x="473" y="395" text-anchor="middle" font-size="8" fill="#27AE60">✓ Automated</text>
+
+  <line x1="558" y1="369" x2="574" y2="369" stroke="#AAA" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Touch 4 -->
+  <rect x="574" y="332" width="170" height="75" rx="8" fill="#F4ECF7" stroke="#8E44AD" stroke-width="1.5"/>
+  <text x="659" y="352" text-anchor="middle" font-size="10" font-weight="bold" fill="#7D3C98">T+8: Follow-up 1</text>
+  <text x="659" y="367" text-anchor="middle" font-size="9" fill="#555">Short bump email</text>
+  <text x="659" y="381" text-anchor="middle" font-size="9" fill="#555">Same sender thread</text>
+  <text x="659" y="395" text-anchor="middle" font-size="8" fill="#27AE60">✓ Automated</text>
+
+  <line x1="744" y1="369" x2="760" y2="369" stroke="#AAA" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Touch 5 -->
+  <rect x="760" y="332" width="170" height="75" rx="8" fill="#FDEDEC" stroke="#E74C3C" stroke-width="1.5"/>
+  <text x="845" y="352" text-anchor="middle" font-size="10" font-weight="bold" fill="#C0392B">T+14: Follow-up 2</text>
+  <text x="845" y="367" text-anchor="middle" font-size="9" fill="#555">Close the loop</text>
+  <text x="845" y="381" text-anchor="middle" font-size="9" fill="#555">Same sender thread</text>
+  <text x="845" y="395" text-anchor="middle" font-size="8" fill="#27AE60">✓ Automated</text>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- ROW 4: NOT AUTOMATED -->
+  <!-- ══════════════════════════════════════════════════════ -->
+
+  <line x1="16" y1="428" x2="944" y2="428" stroke="#DDD" stroke-width="1" stroke-dasharray="5,3"/>
+  <text x="16" y="446" font-size="9" font-weight="bold" fill="#C0392B">④ NOT AUTOMATED — WHY</text>
+
+  <rect x="16" y="454" width="215" height="65" rx="8" fill="#FDFEFE" stroke="#E74C3C" stroke-width="1.5"/>
+  <text x="123" y="472" text-anchor="middle" font-size="10" font-weight="bold" fill="#C0392B">LinkedIn Sending</text>
+  <text x="123" y="487" text-anchor="middle" font-size="9" fill="#555">Full automation violates ToS</text>
+  <text x="123" y="501" text-anchor="middle" font-size="9" fill="#555">Risks permanent account ban</text>
+  <text x="123" y="513" text-anchor="middle" font-size="8" fill="#888">Rep copies pre-built message</text>
+
+  <rect x="247" y="454" width="215" height="65" rx="8" fill="#FDFEFE" stroke="#E74C3C" stroke-width="1.5"/>
+  <text x="354" y="472" text-anchor="middle" font-size="10" font-weight="bold" fill="#C0392B">Leadership Approval</text>
+  <text x="354" y="487" text-anchor="middle" font-size="9" fill="#555">92 ICP-5 C-Suite contacts</text>
+  <text x="354" y="501" text-anchor="middle" font-size="9" fill="#555">VP review before any send</text>
+  <text x="354" y="513" text-anchor="middle" font-size="8" fill="#888">Slack alert → manual approve</text>
+
+  <rect x="478" y="454" width="215" height="65" rx="8" fill="#FDFEFE" stroke="#E74C3C" stroke-width="1.5"/>
+  <text x="585" y="472" text-anchor="middle" font-size="10" font-weight="bold" fill="#C0392B">LOW Confidence Review</text>
+  <text x="585" y="487" text-anchor="middle" font-size="9" fill="#555">5 Government contacts</text>
+  <text x="585" y="501" text-anchor="middle" font-size="9" fill="#555">Bad persona = worse than none</text>
+  <text x="585" y="513" text-anchor="middle" font-size="8" fill="#888">Human edits sheet → re-queued</text>
+
+  <rect x="709" y="454" width="215" height="65" rx="8" fill="#FDFEFE" stroke="#E74C3C" stroke-width="1.5"/>
+  <text x="816" y="472" text-anchor="middle" font-size="10" font-weight="bold" fill="#C0392B">CRM Sync</text>
+  <text x="816" y="487" text-anchor="middle" font-size="9" fill="#555">No HubSpot/Salesforce needed</text>
+  <text x="816" y="501" text-anchor="middle" font-size="9" fill="#555">Google Sheets is source of truth</text>
+  <text x="816" y="513" text-anchor="middle" font-size="8" fill="#888">n8n HubSpot node available</text>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- LEGEND -->
+  <!-- ══════════════════════════════════════════════════════ -->
+
+  <rect x="16" y="538" width="912" height="68" rx="6" fill="#F2F3F4" stroke="#BDC3C7" stroke-width="1"/>
+  <text x="30" y="556" font-size="9" font-weight="bold" fill="#2C3E50">METRICS</text>
+  <text x="30" y="572" font-size="9" fill="#555">Contacts: 200 total · Apollo matches: 135 (68%) · Emails found: 111 (56%) · ICP 4-5: 165 (83%)</text>
+  <text x="30" y="588" font-size="9" fill="#555">AI confidence: 195 HIGH (98%) · 5 LOW (2%) · Routed: 179 assigned · Leadership queue: 92 · Company conflicts: 21</text>
+
+  <text x="560" y="556" font-size="9" font-weight="bold" fill="#2C3E50">TOOLS</text>
+  <text x="560" y="572" font-size="9" fill="#555">Python · Selenium · Apollo.io · Claude 3 Haiku · OpenRouter · n8n · Make.com · GitHub Actions</text>
+  <text x="560" y="588" font-size="9" fill="#555">Google Sheets · Instantly.ai · draw.io/SVG</text>
+
+  <!-- Arrow marker -->
+  <defs>
+    <marker id="arr" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L7,3 z" fill="#AAA"/>
+    </marker>
+  </defs>
+
+</svg>
