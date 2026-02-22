@@ -1,0 +1,723 @@
+{
+  "name": "My workflow 8",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 12
+            }
+          ]
+        }
+      },
+      "id": "d51676f7-dd56-4663-be9a-59a1ceb9cbd7",
+      "name": "Trigger: Every 12 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        416,
+        480
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1nq0q34SO3f0_J4Bzuv4ZhihjPfcvFkk-PDI38GRIA1c",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Master",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "061ee62d-27c0-47c3-b314-b78901a5ea25",
+      "name": "Read All Contacts",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        864,
+        480
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "i7CP4sLwCW7Wi7Gs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.assigned_to }}",
+              "operation": "isEmpty"
+            },
+            {
+              "value1": "={{ $json.persona_summary }}",
+              "operation": "isNotEmpty"
+            },
+            {
+              "value1": "={{ $json.confidence_flag }}",
+              "operation": "isNotEmpty"
+            },
+            {
+              "value1": "={{ $json.confidence_flag }}",
+              "operation": "notEqual",
+              "value2": "LOW"
+            }
+          ]
+        }
+      },
+      "id": "5cb6bba3-fd77-469f-afba-8bce54e8af4c",
+      "name": "Filter: Unassigned + Has Persona",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1088,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const ROUTING = { 'C-Suite': { owner_role: 'Senior AE', sender_level: 'Leadership' }, 'VP/Director': { owner_role: 'AE', sender_level: 'AE' }, 'Manager/IC': { owner_role: 'SDR', sender_level: 'SDR' } };\nconst SENDERS = { 'Leadership': { name: 'Rohan Mehta', title: 'VP of Partnerships', email: 'rohan@company.co' }, 'AE': { name: 'Sneha Kapoor', title: 'Account Executive', email: 'sneha@company.co' }, 'SDR': { name: 'Arjun Sharma', title: 'Sales Development Rep', email: 'arjun@company.co' } };\nconst OWNERS = { 'Senior AE': ['Priya Nair', 'Vikram Sethi'], 'AE': ['Sneha Kapoor', 'Rahul Desai', 'Meera Iyer'], 'SDR': ['Arjun Sharma', 'Divya Menon', 'Karan Bose'] };\nconst items = $input.all(), counters = {}, errors = [];\nconst routed = items.map(item => {\n  const c = item.json;\n  if (!c.id || String(c.id).trim() === '') { errors.push({ name: c.name, company: c.company }); return null; }\n  const seniority = c.seniority_tier || 'Manager/IC';\n  const rules = ROUTING[seniority] || ROUTING['Manager/IC'];\n  const role = rules.owner_role, sl = rules.sender_level;\n  const sender = SENDERS[sl], pool = OWNERS[role] || OWNERS['SDR'];\n  if (!counters[role]) counters[role] = 0;\n  const owner = pool[counters[role]++ % pool.length];\n  const icpScore = parseFloat(c.icp_score);\n  const needsReview = !isNaN(icpScore) && icpScore >= 5 && seniority === 'C-Suite';\n  return { json: { ...c, assigned_to: owner, owner_role: role, sender_name: sender.name, sender_title: sender.title, sender_email: sender.email, leadership_review: needsReview ? 'YES' : 'NO', routing_notes: needsReview ? 'ICP 5 + C-Suite — leadership must approve before send' : '' } };\n}).filter(Boolean);\nif (errors.length) console.warn('[ROUTING] Skipped ' + errors.length + ' missing-id rows');\nreturn routed;"
+      },
+      "id": "3ed8520f-fc59-4fad-b659-8b43c9d01179",
+      "name": "Apply Routing Rules",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1312,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const items = $input.all(), companyOwner = {}, conflicts = [];\nfor (const item of items) {\n  const c = item.json;\n  const coRoot = (c.company||'').toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,12);\n  if (companyOwner[coRoot] && companyOwner[coRoot] !== c.assigned_to) {\n    conflicts.push({ company: c.company, contact: c.name, existing_owner: companyOwner[coRoot], new_owner: c.assigned_to });\n  } else { companyOwner[coRoot] = c.assigned_to; }\n}\nif (conflicts.length) console.warn('[DEDUP] ' + conflicts.length + ' conflicts:', JSON.stringify(conflicts));\nreturn items;"
+      },
+      "id": "61b45911-c4d7-4b2c-81e3-a490816322bc",
+      "name": "Dedup: Company Conflict Check",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1536,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1nq0q34SO3f0_J4Bzuv4ZhihjPfcvFkk-PDI38GRIA1c",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1692599893,
+          "mode": "list",
+          "cachedResultName": "Master",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nq0q34SO3f0_J4Bzuv4ZhihjPfcvFkk-PDI38GRIA1c/edit#gid=1692599893"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "assigned_to": "={{ $json.assigned_to }}",
+            "owner_role": "={{ $json.owner_role }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "industry_vertical",
+              "displayName": "industry_vertical",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "seniority_tier",
+              "displayName": "seniority_tier",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "icp_score",
+              "displayName": "icp_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "company_size",
+              "displayName": "company_size",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "funding_stage",
+              "displayName": "funding_stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "linkedin_url",
+              "displayName": "linkedin_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "enrichment_status",
+              "displayName": "enrichment_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "persona_summary",
+              "displayName": "persona_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "context_hook",
+              "displayName": "context_hook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "personalization_themes",
+              "displayName": "personalization_themes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "confidence_flag",
+              "displayName": "confidence_flag",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "validation_notes",
+              "displayName": "validation_notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "outreach_blocked",
+              "displayName": "outreach_blocked",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "persona_error_at",
+              "displayName": "persona_error_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "assigned_to",
+              "displayName": "assigned_to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "owner_role",
+              "displayName": "owner_role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sender_name",
+              "displayName": "sender_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sender_title",
+              "displayName": "sender_title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sender_email",
+              "displayName": "sender_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "leadership_review",
+              "displayName": "leadership_review",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "routing_notes",
+              "displayName": "routing_notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "li_connect_msg",
+              "displayName": "li_connect_msg",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "li_dm_msg",
+              "displayName": "li_dm_msg",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email_subject",
+              "displayName": "email_subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email_body",
+              "displayName": "email_body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "outreach_status",
+              "displayName": "outreach_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "in_sequence",
+              "displayName": "in_sequence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_touch",
+              "displayName": "last_touch",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_channel",
+              "displayName": "last_channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "variant_used",
+              "displayName": "variant_used",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "1269cb11-46f8-4e6a-bb4f-3d70d255d452",
+      "name": "Write Routing to Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        1760,
+        480
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "i7CP4sLwCW7Wi7Gs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.leadership_review }}",
+              "value2": "YES"
+            }
+          ]
+        }
+      },
+      "id": "c4bc22aa-0df2-45d7-9b89-7ca132d3be8f",
+      "name": "Filter: Leadership Escalations",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1984,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "value": "={{ $env.GSHEET_DOC_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "value": "Leadership Review Queue",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "beb1b6d2-89a3-4f7f-96f0-552934eded23",
+      "name": "Add to Leadership Queue",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        2208,
+        480
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "i7CP4sLwCW7Wi7Gs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "otherOptions": {}
+      },
+      "id": "9ecd8c1b-f836-44c5-8b5b-fbec1dd0f34d",
+      "name": "Slack: Alert Leadership",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2,
+      "position": [
+        2432,
+        480
+      ],
+      "webhookId": "a2e88ff8-5f72-441a-aead-424c7ed8cbe1"
+    },
+    {
+      "parameters": {
+        "functionCode": "const required = ['GSHEET_DOC_ID', 'SLACK_CHANNEL_LEADERSHIP'];\nconst missing = required.filter(k => !$env[k] || String($env[k]).trim() === '');\nif (missing.length > 0) throw new Error('[ENV ERROR] Missing: ' + missing.join(', '));\nreturn $input.all();"
+      },
+      "id": "a784b4fd-ae8c-4bcb-b963-795191042719",
+      "name": "Validate Env Vars2",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        640,
+        480
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Trigger: Every 12 Hours": {
+      "main": [
+        [
+          {
+            "node": "Validate Env Vars2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read All Contacts": {
+      "main": [
+        [
+          {
+            "node": "Filter: Unassigned + Has Persona",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter: Unassigned + Has Persona": {
+      "main": [
+        [
+          {
+            "node": "Apply Routing Rules",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apply Routing Rules": {
+      "main": [
+        [
+          {
+            "node": "Dedup: Company Conflict Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dedup: Company Conflict Check": {
+      "main": [
+        [
+          {
+            "node": "Write Routing to Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Routing to Sheet": {
+      "main": [
+        [
+          {
+            "node": "Filter: Leadership Escalations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter: Leadership Escalations": {
+      "main": [
+        [
+          {
+            "node": "Add to Leadership Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add to Leadership Queue": {
+      "main": [
+        [
+          {
+            "node": "Slack: Alert Leadership",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Env Vars2": {
+      "main": [
+        [
+          {
+            "node": "Read All Contacts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "16568dd7-f0b0-410b-aaf2-b73d127764fd",
+  "meta": {
+    "instanceId": "38f6b3bf77c638917f3fcddeaa4160863b4760c710851f556106a1d6efe29c16"
+  },
+  "id": "GSqah5SMOUZ4bpqO",
+  "tags": []
+}

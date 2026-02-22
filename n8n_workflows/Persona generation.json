@@ -1,0 +1,900 @@
+{
+  "name": "My workflow 8",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "id": "5e5cd523-02a1-4205-889d-96c62a096321",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        -2240,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const required = ['GSHEET_DOC_ID', 'OPENROUTER_API_KEY'];\nconst missing = required.filter(k => !$env[k] || String($env[k]).trim() === '');\nif (missing.length > 0) throw new Error('[ENV ERROR] Missing: ' + missing.join(', '));\nreturn $input.all();"
+      },
+      "id": "544d4261-d28b-4603-8c24-ab42b2fb9180",
+      "name": "Validate Env Vars",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -2016,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1nq0q34SO3f0_J4Bzuv4ZhihjPfcvFkk-PDI38GRIA1c",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1692599893,
+          "mode": "list",
+          "cachedResultName": "Master",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nq0q34SO3f0_J4Bzuv4ZhihjPfcvFkk-PDI38GRIA1c/edit#gid=1692599893"
+        },
+        "options": {}
+      },
+      "id": "f7088af0-830a-47b0-9419-8f0b11235a6e",
+      "name": "Read Enriched Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        -1792,
+        96
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "i7CP4sLwCW7Wi7Gs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.persona_summary }}",
+              "operation": "isEmpty"
+            },
+            {
+              "value1": "={{ $json.enrichment_status }}",
+              "value2": "enriched"
+            }
+          ]
+        }
+      },
+      "id": "4ddb8716-9380-41e7-91a5-c709fe4b2b57",
+      "name": "Filter: Needs Persona",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -1568,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const item = $input.item.json;\nif (!item.id || String(item.id).trim() === '') throw new Error('[DATA ERROR] Row missing id: ' + JSON.stringify({name: item.name, company: item.company}));\nconst c = item;\nconst industry = c.industry_vertical || '';\nlet systemPrompt;\nif (industry === 'VC/PE') {\n  systemPrompt = 'You are a B2B sales intelligence assistant. Generate a persona for a VC/PE investor at TechSparks 2024. Use ONLY provided fields. Output valid JSON only. Product angle: portfolio companies need pricing and competitive intelligence.';\n} else if (industry === 'Government') {\n  systemPrompt = 'You are a B2B sales intelligence assistant. Government contact, low priority. Generate minimal neutral persona. Output valid JSON only.';\n} else {\n  systemPrompt = 'You are a B2B sales intelligence assistant for TechSparks 2024 GTM. RULES: Use ONLY provided fields. No generic phrases (passionate about, thought leader, driving innovation, seasoned professional, dynamic, visionary, at the forefront). Output valid JSON only, no markdown. persona_summary under 60 words, context_hook under 50 words. If insufficient data, set confidence LOW. Product: YC-backed data intelligence for pricing intelligence, competitive benchmarking, data automation.';\n}\nconst allowed = ['name','title','company','seniority_tier','industry_vertical','icp_score','company_size','funding_stage'];\nconst filtered = {};\nfor (const k of allowed) { if (c[k] && String(c[k]).trim() && c[k] !== 'nan') filtered[k] = c[k]; }\nconst userContent = 'Generate a persona for this contact.\\n\\nINPUT:\\n' + JSON.stringify(filtered, null, 2) + '\\n\\nOUTPUT (valid JSON only):\\n{\\n  \"persona_summary\": \"<3 sentences: role archetype, responsibility, decision lens>\",\\n  \"context_hook\": \"<1-2 sentences: why pricing or data automation matters to them>\",\\n  \"personalization_themes\": [\"<theme1>\", \"<theme2>\", \"<theme3>\"],\\n  \"confidence\": \"<HIGH|MEDIUM|LOW>\"\\n}';\nreturn [{ json: { ...c, _system_prompt: systemPrompt, _user_content: userContent, _prompt_version: 'v1.3', _is_government: industry === 'Government' } }];"
+      },
+      "id": "6774fa58-1a73-4abc-ae09-7541e41fac41",
+      "name": "Build Prompt",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -1344,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "id": "7f94ef8b-2a2c-4a63-bf6d-3db62bc790fa",
+      "name": "Rate Limit Pause",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        32
+      ],
+      "webhookId": "9e20a1ea-c125-423b-9f11-1279cfc1d5dd"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.OPENROUTER_API_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "HTTP-Referer",
+              "value": "https://github.com/techsparks-gtm"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"model\":\"anthropic/claude-3-haiku\",\"messages\":[{\"role\":\"system\",\"content\":{{ JSON.stringify($json._system_prompt) }}},{\"role\":\"user\",\"content\":{{ JSON.stringify($json._user_content) }}}],\"temperature\":0.3,\"max_tokens\":600,\"response_format\":{\"type\":\"json_object\"}}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "add87968-6fbf-4eea-9d76-5bff6dbe133a",
+      "name": "Call Claude (OpenRouter)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        -896,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const item = $input.item.json;\nif (!item.choices || !item.choices[0] || !item.choices[0].message) {\n  const err = item.error ? JSON.stringify(item.error) : 'No choices returned';\n  return [{ json: { ...item, persona_summary: '', context_hook: '', personalization_themes: '', confidence_flag: 'LOW', validation_notes: 'LLM_CALL_FAILED: ' + err, persona_error_at: new Date().toISOString(), _raw_llm_output: '' } }];\n}\nconst rawOutput = item.choices[0].message.content || '';\nconst GENERIC = ['as a leader','in the tech space','passionate about','driving innovation','thought leader','seasoned professional','dynamic','visionary','at the forefront'];\nlet parsed = {}, parseError = '', confidenceFlag = 'LOW', notes = [];\ntry {\n  let text = rawOutput.replace(/^```json?\\s*/,'').replace(/\\s*```$/,'').trim();\n  const s = text.indexOf('{'), e = text.lastIndexOf('}');\n  if (s > -1 && e > -1) { parsed = JSON.parse(text.slice(s, e+1).replace(/,\\s*([}\\]])/g,'$1')); } else { parseError = 'No JSON found'; }\n} catch(ex) { parseError = 'Parse error: ' + ex.message; }\nif (parseError) { notes.push('PARSE_ERROR: ' + parseError); }\nelse {\n  for (const f of ['persona_summary','context_hook','personalization_themes','confidence']) { if (!parsed[f]) notes.push('Missing: ' + f); }\n  const allText = [parsed.persona_summary, parsed.context_hook, ...(parsed.personalization_themes||[])].join(' ').toLowerCase();\n  const bad = GENERIC.filter(p => allText.includes(p));\n  if (bad.length) notes.push('Generic phrases: ' + bad.join(', '));\n  if ((parsed.persona_summary||'').length < 80) notes.push('persona_summary too short');\n  if ((parsed.context_hook||'').length < 50) notes.push('context_hook too short');\n  const llmConf = parsed.confidence || 'LOW';\n  const flags = notes.length + (llmConf === 'LOW' ? 3 : 0) + (bad.length > 0 ? 2 : 0);\n  confidenceFlag = flags === 0 && llmConf === 'HIGH' ? 'HIGH' : flags <= 2 ? 'MEDIUM' : 'LOW';\n  if (item._is_government && confidenceFlag === 'HIGH') confidenceFlag = 'MEDIUM';\n}\nconst themes = Array.isArray(parsed.personalization_themes) ? parsed.personalization_themes.join(' | ') : '';\nreturn [{ json: { ...item, persona_summary: parsed.persona_summary || '', context_hook: parsed.context_hook || '', personalization_themes: themes, confidence_flag: confidenceFlag, validation_notes: notes.join(' | '), _raw_llm_output: rawOutput.slice(0, 5000) } }];"
+      },
+      "id": "3fb93e06-6d3e-400d-9d26-fc9b2003db0a",
+      "name": "Validate & Parse Persona",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.confidence_flag }}",
+              "operation": "notEqual",
+              "value2": "LOW"
+            }
+          ]
+        }
+      },
+      "id": "be143b9e-67bf-4f65-8777-ee797fc09fc8",
+      "name": "Route: HIGH/MEDIUM vs LOW",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1nq0q34SO3f0_J4Bzuv4ZhihjPfcvFkk-PDI38GRIA1c",
+          "mode": "id"
+        },
+        "sheetName": {
+          "value": "Master",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "persona_summary": "={{$json.persona_summary}}",
+            "context_hook": "={{$json.context_hook}}",
+            "personalization_themes": "={{$json.personalization_themes}}",
+            "confidence_flag": "={{$json.confidence_flag}}",
+            "validation_notes": "={{$json.validation_notes}}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "industry_vertical",
+              "displayName": "industry_vertical",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "seniority_tier",
+              "displayName": "seniority_tier",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "icp_score",
+              "displayName": "icp_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "company_size",
+              "displayName": "company_size",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "funding_stage",
+              "displayName": "funding_stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "linkedin_url",
+              "displayName": "linkedin_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "enrichment_status",
+              "displayName": "enrichment_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "persona_summary",
+              "displayName": "persona_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "context_hook",
+              "displayName": "context_hook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "personalization_themes",
+              "displayName": "personalization_themes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "confidence_flag",
+              "displayName": "confidence_flag",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "validation_notes",
+              "displayName": "validation_notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "outreach_blocked",
+              "displayName": "outreach_blocked",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "persona_error_at",
+              "displayName": "persona_error_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "assigned_to",
+              "displayName": "assigned_to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "owner_role",
+              "displayName": "owner_role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sender_name",
+              "displayName": "sender_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sender_title",
+              "displayName": "sender_title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sender_email",
+              "displayName": "sender_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "leadership_review",
+              "displayName": "leadership_review",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "routing_notes",
+              "displayName": "routing_notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "li_connect_msg",
+              "displayName": "li_connect_msg",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "li_dm_msg",
+              "displayName": "li_dm_msg",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email_subject",
+              "displayName": "email_subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email_body",
+              "displayName": "email_body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "outreach_status",
+              "displayName": "outreach_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "in_sequence",
+              "displayName": "in_sequence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_touch",
+              "displayName": "last_touch",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_channel",
+              "displayName": "last_channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "variant_used",
+              "displayName": "variant_used",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "provider",
+              "displayName": "provider",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "model",
+              "displayName": "model",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "object",
+              "displayName": "object",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created",
+              "displayName": "created",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "choices",
+              "displayName": "choices",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "usage",
+              "displayName": "usage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "_system_prompt",
+              "displayName": "_system_prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "_user_content",
+              "displayName": "_user_content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "_prompt_version",
+              "displayName": "_prompt_version",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "_is_government",
+              "displayName": "_is_government",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "_raw_llm_output",
+              "displayName": "_raw_llm_output",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "df09e962-0a3e-4be7-bd50-d8bcd58f69af",
+      "name": "Write Persona to Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        0,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "i7CP4sLwCW7Wi7Gs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "value": "={{ $env.GSHEET_DOC_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "value": "Human Review Queue",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "d320d7f0-e064-4153-93a8-f61a5deda8fd",
+      "name": "Flag for Human Review",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        0,
+        192
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "i7CP4sLwCW7Wi7Gs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -672,
+        96
+      ],
+      "id": "a1533f52-5060-44ae-aa05-966770247470",
+      "name": "Merge"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Validate Env Vars",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Env Vars": {
+      "main": [
+        [
+          {
+            "node": "Read Enriched Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Enriched Sheet": {
+      "main": [
+        [
+          {
+            "node": "Filter: Needs Persona",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter: Needs Persona": {
+      "main": [
+        [
+          {
+            "node": "Build Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Prompt": {
+      "main": [
+        [
+          {
+            "node": "Rate Limit Pause",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Rate Limit Pause": {
+      "main": [
+        [
+          {
+            "node": "Call Claude (OpenRouter)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Claude (OpenRouter)": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate & Parse Persona": {
+      "main": [
+        [
+          {
+            "node": "Route: HIGH/MEDIUM vs LOW",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route: HIGH/MEDIUM vs LOW": {
+      "main": [
+        [
+          {
+            "node": "Write Persona to Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Flag for Human Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Validate & Parse Persona",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "fc5b34fa-9397-4282-81db-0d2373ad2e79",
+  "meta": {
+    "instanceId": "38f6b3bf77c638917f3fcddeaa4160863b4760c710851f556106a1d6efe29c16"
+  },
+  "id": "GSqah5SMOUZ4bpqO",
+  "tags": []
+}

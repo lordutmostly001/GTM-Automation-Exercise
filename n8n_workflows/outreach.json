@@ -1,0 +1,1787 @@
+{
+  "name": "My workflow 8",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * 1-5"
+            }
+          ]
+        }
+      },
+      "id": "c382058a-d36f-464a-a595-b542598098f0",
+      "name": "Daily Trigger (8AM Weekdays)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1nq0q34SO3f0_J4Bzuv4ZhihjPfcvFkk-PDI38GRIA1c",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1692599893,
+          "mode": "list",
+          "cachedResultName": "Master",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nq0q34SO3f0_J4Bzuv4ZhihjPfcvFkk-PDI38GRIA1c/edit#gid=1692599893"
+        },
+        "options": {}
+      },
+      "id": "294d1ecf-0ba9-4c48-a9ee-3eeed5bbe8ab",
+      "name": "Read Outreach Queue",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        -224,
+        720
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "i7CP4sLwCW7Wi7Gs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "// ─────────────────────────────────────────────\n// CONFIG\n// ─────────────────────────────────────────────\n\n// Force phase manually if needed (for testing/demo)\nconst FORCE_PHASE = $env.FORCE_PHASE ? String($env.FORCE_PHASE).trim() : null;\n\n// Read environment dates safely\nconst EVENT_START_RAW = '2026-02-20';\nconst EVENT_END_RAW   = '2026-02-21';\n\nconst EVENT_START = new Date(EVENT_START_RAW);\nconst EVENT_END   = new Date(EVENT_END_RAW);\n\nconst MAX_PER_RUN = parseInt($env.MAX_SENDS_PER_RUN || '25', 10);\nconst DISABLE_HARD_STOP = String($env.DISABLE_HARD_STOP || 'true').toLowerCase() === 'true';\n\n// Normalize today\nconst today = new Date();\ntoday.setHours(0,0,0,0);\n\n// Debug logs (important for troubleshooting)\nconsole.log('[PHASE ROUTER] TODAY:', today);\nconsole.log('[PHASE ROUTER] EVENT_START:', EVENT_START);\nconsole.log('[PHASE ROUTER] EVENT_END:', EVENT_END);\nconsole.log('[PHASE ROUTER] FORCE_PHASE:', FORCE_PHASE);\n\n// Post-event milestones\nconst postD5  = new Date(EVENT_END); postD5.setDate(postD5.getDate()+5);\nconst postD8  = new Date(EVENT_END); postD8.setDate(postD8.getDate()+8);\nconst postD21 = new Date(EVENT_END); postD21.setDate(postD21.getDate()+21);\n\n// ─────────────────────────────────────────────\n// HARD STOP\n// ─────────────────────────────────────────────\nif (!DISABLE_HARD_STOP && today > postD21) {\n  console.log('[PHASE ROUTER] Hard stop triggered (past D+21)');\n  return [];\n}\n\n// ─────────────────────────────────────────────\n// DETERMINE PHASE\n// ─────────────────────────────────────────────\nlet phase;\n\nif (FORCE_PHASE) {\n  phase = FORCE_PHASE;\n} else if (today < EVENT_START) {\n  phase = 'pre_event';\n} else if (today <= EVENT_END) {\n  phase = 'during_event';\n} else if (today < postD5) {\n  phase = 'post_event';\n} else if (today < postD8) {\n  phase = 'post_event_fu1';\n} else {\n  phase = 'post_event_fu2';\n}\n\nconsole.log('[PHASE ROUTER] Calculated Phase:', phase);\n\n// ─────────────────────────────────────────────\n// ELIGIBILITY FILTER\n// ─────────────────────────────────────────────\nconst inputItems = $input.all();\nconsole.log('[PHASE ROUTER] Total input rows:', inputItems.length);\n\nconst eligible = inputItems.filter(item => {\n  const c = item.json;\n  const score = parseFloat(c.icp_score);\n\n  const outreachStatus   = String(c.outreach_status || '').trim().toLowerCase();\n  const inSequence       = String(c.in_sequence || '').trim().toUpperCase();\n  const confidence       = String(c.confidence_flag || '').trim().toUpperCase();\n  const leadershipReview = String(c.leadership_review || '').trim().toUpperCase();\n  const outreachBlocked  = String(c.outreach_blocked || '').trim().toUpperCase();\n  const email            = String(c.email || '').trim();\n\n  const isEligible =\n    outreachStatus === 'pending' &&\n    inSequence !== 'TRUE' &&\n    confidence && confidence !== 'LOW' &&\n    !isNaN(score) && score >= 3 &&\n    leadershipReview !== 'YES' &&\n    outreachBlocked !== 'YES' &&\n    email !== '';\n\n  if (!isEligible) {\n    console.log('[PHASE ROUTER] Dropped row:', {\n      id: c.id,\n      outreachStatus,\n      inSequence,\n      confidence,\n      score,\n      leadershipReview,\n      outreachBlocked,\n      email\n    });\n  }\n\n  return isEligible;\n});\n\nconst capped = eligible.slice(0, MAX_PER_RUN);\n\nconsole.log(`[PHASE ROUTER] Eligible: ${eligible.length}, Sending this run: ${capped.length}`);\n\n// ─────────────────────────────────────────────\n// RETURN\n// ─────────────────────────────────────────────\nreturn capped.map(item => ({\n  json: {\n    ...item.json,\n    _phase: phase,              // <-- REQUIRED\n    _debug_phase: phase,        // optional\n    _debug_today: today,\n    _debug_event_start: EVENT_START,\n    _debug_event_end: EVENT_END\n  }\n}));"
+      },
+      "id": "86902553-5429-46f6-824c-4b8853402fbf",
+      "name": "Phase Router",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        0,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{$json[\"_phase\"]}}",
+        "rules": {
+          "rules": [
+            {
+              "value2": "pre_event"
+            },
+            {
+              "value2": "during_event",
+              "output": 1
+            },
+            {
+              "value2": "post_event",
+              "output": 2
+            },
+            {
+              "value2": "post_event_fu1",
+              "output": 3
+            }
+          ]
+        }
+      },
+      "id": "ee93740d-0a88-4ec2-9afe-4d874bd35a52",
+      "name": "Switch: Phase",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        224,
+        688
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const c = $input.item.json;\nconst re = /^(Dr\\.?|Mr\\.?|Mrs\\.?|Ms\\.?|Prof\\.?|Shri\\.?)\\s+/i;\nconst firstName = c.name.replace(re,'').split(' ')[0];\nconst themes = (c.personalization_themes||'').split('|').map(t=>t.trim().toLowerCase());\nconst p1 = themes[0] || 'data-driven decision making';\nconst industry = c.industry_vertical || '', seniority = c.seniority_tier || '';\nlet variant, message;\nif (industry === 'VC/PE') { variant='B'; message='Hi ' + firstName + ', coming across your name ahead of TechSparks — founders I speak with are increasingly asking about ' + p1 + '. Keen to connect and exchange notes. — Rohan Mehta'; }\nelse if (seniority === 'C-Suite') { variant='A'; message='Hi ' + firstName + ', spotted you on the TechSparks speaker list — your work at ' + c.company + ' on ' + p1 + ' caught my attention. Would love to connect ahead of the event. — Rohan Mehta'; }\nelse { variant='C'; message='Hi ' + firstName + ', attending TechSparks next week and noticed your background at ' + c.company + '. Working on problems around ' + p1 + ' — would love to connect. — Sneha Kapoor'; }\nif (message.length > 300) message = message.slice(0,297)+'...';\nreturn [{ json: { ...c, _first_name: firstName, _message: message, _variant: variant, _channel: 'linkedin_connect', li_connect_msg: message } }];"
+      },
+      "id": "7e66ad22-0bc7-4d6a-bc86-7693b6dcd70c",
+      "name": "Build: LinkedIn Connect",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        448,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const c = $input.item.json;\nconst re = /^(Dr\\.?|Mr\\.?|Mrs\\.?|Ms\\.?|Prof\\.?|Shri\\.?)\\s+/i;\nconst firstName = c.name.replace(re,'').split(' ')[0];\nconst themes = (c.personalization_themes||'').split('|').map(t=>t.trim().toLowerCase());\nconst p1 = themes[0] || 'competitive intelligence', hook = c.context_hook || '';\nconst industry = c.industry_vertical || '';\nlet variant, message;\nif (industry === 'VC/PE') { variant='B'; message='Hey ' + firstName + ',\\n\\nAppreciated connecting. Your portfolio is interesting — particularly companies competing in price-sensitive categories.\\n\\n' + hook + '\\n\\nWorth a 20-min call to share what we are seeing across the ecosystem?\\n\\nRohan Mehta\\nVP of Partnerships'; }\nelse if (c.seniority_tier === 'C-Suite') { variant='A'; message='Hey ' + firstName + ',\\n\\nGreat connecting — your work at ' + c.company + ' on ' + p1 + ' is interesting.\\n\\n' + hook + '\\n\\nNot pitching — just thought it was relevant to what you are navigating.\\n\\nRohan Mehta\\nVP of Partnerships'; }\nelse { variant='C'; message='Hey ' + firstName + ',\\n\\nGood to connect at TechSparks. Quick question — is ' + p1 + ' something your team is actively working through?\\n\\nSneha Kapoor'; }\nreturn [{ json: { ...c, _first_name: firstName, _message: message, _variant: variant, _channel: 'linkedin_dm', li_dm_msg: message } }];"
+      },
+      "id": "02cd6b91-fd6a-4d80-b555-bb77f45dfe74",
+      "name": "Build: LinkedIn DM",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        448,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const c = $input.item.json;\nconst re = /^(Dr\\.?|Mr\\.?|Mrs\\.?|Ms\\.?|Prof\\.?|Shri\\.?)\\s+/i;\nconst firstName = c.name.replace(re,'').split(' ')[0];\nconst themes = (c.personalization_themes||'').split('|').map(t=>t.trim().toLowerCase());\nconst p1 = themes[0] || 'data-driven decision making', hook = c.context_hook || '';\nconst industry = c.industry_vertical || '';\nlet subject, body, variant;\nif (industry === 'VC/PE') {\n  variant='B'; subject='Post-TechSparks — one thing worth passing to your portfolio';\n  body='Hi ' + firstName + ',\\n\\nGood week at TechSparks. ' + hook + '\\n\\nI know a YC-backed company built for this: pricing intelligence, competitive benchmarking, and data automation.\\n\\nIf it is worth 15 minutes for a portfolio intro, happy to make the connection.\\n\\nRohan Mehta\\nVP of Partnerships\\nrohan@company.co';\n} else if (c.seniority_tier === 'C-Suite') {\n  variant='A'; subject='Something relevant from TechSparks week — ' + firstName;\n  body='Hi ' + firstName + ',\\n\\nHope the TechSparks energy has carried into this week.\\n\\n' + hook + '\\n\\nThe companies getting ahead of this use automated pipelines to do in real-time what used to take an analyst a week.\\n\\nWorth a quick intro?\\n\\nRohan Mehta\\nVP of Partnerships\\nrohan@company.co';\n} else {\n  variant='C'; subject='Following up from TechSparks — ' + firstName;\n  body='Hi ' + firstName + ',\\n\\nQuick follow-up from TechSparks. ' + hook + '\\n\\nThere is a YC-backed company I would be happy to introduce you to if ' + p1 + ' is on your radar.\\n\\nLet me know if useful.\\n\\nSneha Kapoor';\n}\nreturn [{ json: { ...c, _first_name: firstName, _subject: subject, _body: body, _variant: variant, _channel: 'email', email_subject: subject, email_body: body } }];"
+      },
+      "id": "bd7e7f53-9f8d-4288-ac21-9ccafb5afa4d",
+      "name": "Build: Post-Event Email",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        448,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const c = $input.item.json;\nconst re = /^(Dr\\.?|Mr\\.?|Mrs\\.?|Ms\\.?|Prof\\.?|Shri\\.?)\\s+/i;\nconst firstName = c.name.replace(re,'').split(' ')[0];\nconst themes = (c.personalization_themes||'').split('|').map(t=>t.trim().toLowerCase());\nconst p1 = themes[0] || 'data-driven decision making';\nconst subject = 'Re: Something relevant from TechSparks week — ' + firstName;\nconst body = 'Hi ' + firstName + ',\\n\\nJust bumping this up in case it got buried.\\n\\nOne line: I know a YC-backed team solving ' + p1 + ' for companies like ' + c.company + ' — happy to make the intro if relevant.\\n\\nRohan Mehta';\nreturn [{ json: { ...c, _first_name: firstName, _subject: subject, _body: body, _variant: 'FU1', _channel: 'email', email_subject: subject, email_body: body } }];"
+      },
+      "id": "a234ba07-093d-47ca-9498-22dc7bdb231c",
+      "name": "Build: Follow-up 1",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        448,
+        1024
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const c = $input.item.json;\nconst re = /^(Dr\\.?|Mr\\.?|Mrs\\.?|Ms\\.?|Prof\\.?|Shri\\.?)\\s+/i;\nconst firstName = c.name.replace(re,'').split(' ')[0];\nconst subject = 'Closing the loop — ' + firstName;\nconst body = 'Hi ' + firstName + ',\\n\\nClosing the loop on my earlier note. If the timing is not right, completely understood — happy to reconnect when it is.\\n\\nRohan Mehta';\nreturn [{ json: { ...c, _first_name: firstName, _subject: subject, _body: body, _variant: 'FU2', _channel: 'email', email_subject: subject, email_body: body } }];"
+      },
+      "id": "d7b2cb5b-44fc-4dcc-ba1d-bdbab8f7d1ce",
+      "name": "Build: Follow-up 2",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        448,
+        1216
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1nq0q34SO3f0_J4Bzuv4ZhihjPfcvFkk-PDI38GRIA1c",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1692599893,
+          "mode": "list",
+          "cachedResultName": "Master",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nq0q34SO3f0_J4Bzuv4ZhihjPfcvFkk-PDI38GRIA1c/edit#gid=1692599893"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "li_connect_msg": "={{ $json.li_connect_msg }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "industry_vertical",
+              "displayName": "industry_vertical",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "seniority_tier",
+              "displayName": "seniority_tier",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "icp_score",
+              "displayName": "icp_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "company_size",
+              "displayName": "company_size",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "funding_stage",
+              "displayName": "funding_stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "linkedin_url",
+              "displayName": "linkedin_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "enrichment_status",
+              "displayName": "enrichment_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "persona_summary",
+              "displayName": "persona_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "context_hook",
+              "displayName": "context_hook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "personalization_themes",
+              "displayName": "personalization_themes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "confidence_flag",
+              "displayName": "confidence_flag",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "validation_notes",
+              "displayName": "validation_notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "outreach_blocked",
+              "displayName": "outreach_blocked",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "persona_error_at",
+              "displayName": "persona_error_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "assigned_to",
+              "displayName": "assigned_to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "owner_role",
+              "displayName": "owner_role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sender_name",
+              "displayName": "sender_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sender_title",
+              "displayName": "sender_title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sender_email",
+              "displayName": "sender_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "leadership_review",
+              "displayName": "leadership_review",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "routing_notes",
+              "displayName": "routing_notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "li_connect_msg",
+              "displayName": "li_connect_msg",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "li_dm_msg",
+              "displayName": "li_dm_msg",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email_subject",
+              "displayName": "email_subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email_body",
+              "displayName": "email_body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "outreach_status",
+              "displayName": "outreach_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "in_sequence",
+              "displayName": "in_sequence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_touch",
+              "displayName": "last_touch",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_channel",
+              "displayName": "last_channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "variant_used",
+              "displayName": "variant_used",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "50c105fe-f87d-41f1-bd33-2548672e5950",
+      "name": "Write LinkedIn Connect to Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        672,
+        352
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "i7CP4sLwCW7Wi7Gs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1nq0q34SO3f0_J4Bzuv4ZhihjPfcvFkk-PDI38GRIA1c",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1692599893,
+          "mode": "list",
+          "cachedResultName": "Master",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nq0q34SO3f0_J4Bzuv4ZhihjPfcvFkk-PDI38GRIA1c/edit#gid=1692599893"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "li_dm_msg": "={{ $json.li_dm_msg}}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "industry_vertical",
+              "displayName": "industry_vertical",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "seniority_tier",
+              "displayName": "seniority_tier",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "icp_score",
+              "displayName": "icp_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "company_size",
+              "displayName": "company_size",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "funding_stage",
+              "displayName": "funding_stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "linkedin_url",
+              "displayName": "linkedin_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "enrichment_status",
+              "displayName": "enrichment_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "persona_summary",
+              "displayName": "persona_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "context_hook",
+              "displayName": "context_hook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "personalization_themes",
+              "displayName": "personalization_themes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "confidence_flag",
+              "displayName": "confidence_flag",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "validation_notes",
+              "displayName": "validation_notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "outreach_blocked",
+              "displayName": "outreach_blocked",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "persona_error_at",
+              "displayName": "persona_error_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "assigned_to",
+              "displayName": "assigned_to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "owner_role",
+              "displayName": "owner_role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sender_name",
+              "displayName": "sender_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sender_title",
+              "displayName": "sender_title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sender_email",
+              "displayName": "sender_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "leadership_review",
+              "displayName": "leadership_review",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "routing_notes",
+              "displayName": "routing_notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "li_connect_msg",
+              "displayName": "li_connect_msg",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "li_dm_msg",
+              "displayName": "li_dm_msg",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email_subject",
+              "displayName": "email_subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email_body",
+              "displayName": "email_body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "outreach_status",
+              "displayName": "outreach_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "in_sequence",
+              "displayName": "in_sequence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_touch",
+              "displayName": "last_touch",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_channel",
+              "displayName": "last_channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "variant_used",
+              "displayName": "variant_used",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "8a02accb-0f06-4da2-9b26-84c3c17b2da6",
+      "name": "Write LinkedIn DM to Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        672,
+        544
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "i7CP4sLwCW7Wi7Gs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1nq0q34SO3f0_J4Bzuv4ZhihjPfcvFkk-PDI38GRIA1c",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1692599893,
+          "mode": "list",
+          "cachedResultName": "Master",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nq0q34SO3f0_J4Bzuv4ZhihjPfcvFkk-PDI38GRIA1c/edit#gid=1692599893"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "email_subject": "={{ $json.email_subject }}",
+            "email_body": "={{ $json.email_body }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "industry_vertical",
+              "displayName": "industry_vertical",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "seniority_tier",
+              "displayName": "seniority_tier",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "icp_score",
+              "displayName": "icp_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "company_size",
+              "displayName": "company_size",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "funding_stage",
+              "displayName": "funding_stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "linkedin_url",
+              "displayName": "linkedin_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "enrichment_status",
+              "displayName": "enrichment_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "persona_summary",
+              "displayName": "persona_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "context_hook",
+              "displayName": "context_hook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "personalization_themes",
+              "displayName": "personalization_themes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "confidence_flag",
+              "displayName": "confidence_flag",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "validation_notes",
+              "displayName": "validation_notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "outreach_blocked",
+              "displayName": "outreach_blocked",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "persona_error_at",
+              "displayName": "persona_error_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "assigned_to",
+              "displayName": "assigned_to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "owner_role",
+              "displayName": "owner_role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sender_name",
+              "displayName": "sender_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sender_title",
+              "displayName": "sender_title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sender_email",
+              "displayName": "sender_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "leadership_review",
+              "displayName": "leadership_review",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "routing_notes",
+              "displayName": "routing_notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "li_connect_msg",
+              "displayName": "li_connect_msg",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "li_dm_msg",
+              "displayName": "li_dm_msg",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email_subject",
+              "displayName": "email_subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email_body",
+              "displayName": "email_body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "outreach_status",
+              "displayName": "outreach_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "in_sequence",
+              "displayName": "in_sequence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_touch",
+              "displayName": "last_touch",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_channel",
+              "displayName": "last_channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "variant_used",
+              "displayName": "variant_used",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "b378fef8-49e9-42b3-b114-7b1745727617",
+      "name": "Pre-Write Email Fields",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        672,
+        736
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "i7CP4sLwCW7Wi7Gs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apollo.io/v1/contacts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Api-Key",
+              "value": "={{ $env.APOLLO_API_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{\n{\n  \"first_name\": $json._first_name || \"\",\n  \"last_name\": ($json.name || \"\")\n    .replace(/^(Dr\\.?|Mr\\.?|Mrs\\.?|Ms\\.?|Prof\\.?|Shri\\.?)\\s+/i, \"\")\n    .split(\" \")\n    .slice(1)\n    .join(\" \") || \"\",\n  \"email\": $json.email || \"\",\n  \"title\": $json.title || \"\",\n  \"organization_name\": $json.company || \"\"\n}\n}}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "852109cb-a8ac-445f-bab7-62674ce5a120",
+      "name": "Apollo: Create Contact",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1120,
+        816
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const response = $input.item.json;\nconst apolloContact = response.contact;\nif (!apolloContact || !apolloContact.id) {\n  throw new Error('[APOLLO] Could not get contact ID. Response: ' + JSON.stringify(response).slice(0, 300));\n}\nreturn [{ json: { ...$input.item.json, _apollo_contact_id: apolloContact.id } }];"
+      },
+      "id": "41801806-fefe-4e28-8132-0b8e2fe62a31",
+      "name": "Extract Apollo Contact ID",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1344,
+        816
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.apollo.io/v1/emailer_campaigns/{{ $env.APOLLO_SEQUENCE_ID }}/add_contact_ids",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Api-Key",
+              "value": "={{ $env.APOLLO_API_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{\n{\n  \"contact_ids\": [$json._apollo_contact_id],\n  \"emailer_campaign_id\": \"6999d89de5a07500150382ee\",\n  \"send_email_from_email_account_id\": \"6996175c1bd34a001d22250d\"\n}\n}}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "5a7ee9d2-2a29-4df2-8772-b5e7e493d45b",
+      "name": "Apollo: Add to Sequence",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1568,
+        816
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 2,
+        "unit": "seconds"
+      },
+      "id": "56cf489b-c37f-43fc-8d41-78c52fc00128",
+      "name": "Send Rate Limiter",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        1792,
+        816
+      ],
+      "webhookId": "dbd9215d-4eb1-4200-959f-1940d3a9d7e6"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "value": "={{ $env.GSHEET_DOC_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "value": "Master",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "fa3e6357-a283-43a5-aa2a-7eaeee49576c",
+      "name": "Update Status in Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        2016,
+        816
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "i7CP4sLwCW7Wi7Gs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const required = ['GSHEET_DOC_ID','APOLLO_API_KEY','APOLLO_SEQUENCE_ID'];\nconst missing = required.filter(k => !$env[k] || String($env[k]).trim() === '');\nif (missing.length > 0) throw new Error('[ENV ERROR] Missing: ' + missing.join(', '));\nreturn $input.all();"
+      },
+      "id": "b9c01446-0771-45db-8834-4337ed288bdd",
+      "name": "Validate Env Vars1",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        896,
+        816
+      ],
+      "id": "b338d3c9-ec43-4078-a376-29229a2e2e85",
+      "name": "Merge1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Daily Trigger (8AM Weekdays)": {
+      "main": [
+        [
+          {
+            "node": "Validate Env Vars1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Outreach Queue": {
+      "main": [
+        [
+          {
+            "node": "Phase Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Phase Router": {
+      "main": [
+        [
+          {
+            "node": "Switch: Phase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch: Phase": {
+      "main": [
+        [
+          {
+            "node": "Build: LinkedIn Connect",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build: LinkedIn DM",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build: Post-Event Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build: Follow-up 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build: LinkedIn Connect": {
+      "main": [
+        [
+          {
+            "node": "Write LinkedIn Connect to Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build: LinkedIn DM": {
+      "main": [
+        [
+          {
+            "node": "Write LinkedIn DM to Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build: Post-Event Email": {
+      "main": [
+        [
+          {
+            "node": "Pre-Write Email Fields",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Build: Follow-up 1": {
+      "main": [
+        [
+          {
+            "node": "Pre-Write Email Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build: Follow-up 2": {
+      "main": [
+        [
+          {
+            "node": "Pre-Write Email Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pre-Write Email Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apollo: Create Contact": {
+      "main": [
+        [
+          {
+            "node": "Extract Apollo Contact ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Apollo Contact ID": {
+      "main": [
+        [
+          {
+            "node": "Apollo: Add to Sequence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apollo: Add to Sequence": {
+      "main": [
+        [
+          {
+            "node": "Send Rate Limiter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Rate Limiter": {
+      "main": [
+        [
+          {
+            "node": "Update Status in Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Env Vars1": {
+      "main": [
+        [
+          {
+            "node": "Read Outreach Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Apollo: Create Contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "dbfeaee4-806a-40a8-b4ab-76663eefeb6e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "38f6b3bf77c638917f3fcddeaa4160863b4760c710851f556106a1d6efe29c16"
+  },
+  "id": "GSqah5SMOUZ4bpqO",
+  "tags": []
+}
