@@ -69,7 +69,7 @@ Reads unenriched contacts from Google Sheets, calls the Apollo People Search API
 
 ## 3️⃣ AI Persona & Context Generation
 
-**n8n workflow:** `persona_builder.json` — powered by Claude (via OpenRouter)
+**n8n workflow:** `Persona_generation.json` — powered by Claude (via OpenRouter)
 
 Filters enriched contacts, builds structured prompts, and generates persona data in strict JSON format.
 
@@ -93,7 +93,7 @@ Filters enriched contacts, builds structured prompts, and generates persona data
 
 ## 4️⃣ Lead Routing Logic
 
-**n8n workflow:** `routing_engine.json`
+**n8n workflow:** `lead_routing.json`
 
 **Routing rules:**
 
@@ -113,7 +113,7 @@ Filters enriched contacts, builds structured prompts, and generates persona data
 
 ## 5️⃣ Outreach Engine
 
-**n8n workflow:** `outreach_engine.json`
+**n8n workflow:** `outreach.json`
 
 **Multi-phase ABM sequence:**
 
@@ -123,7 +123,6 @@ Filters enriched contacts, builds structured prompts, and generates persona data
 | During event | LinkedIn DM |
 | Post-event | Email |
 | Follow-up 1 | Email |
-| Follow-up 2 | Email |
 
 **Controls:**
 - Event-date-driven phase logic
