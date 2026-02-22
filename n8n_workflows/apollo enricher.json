@@ -1,0 +1,330 @@
+{
+  "name": "TechSparks \u2014 04 Apollo Contact Enricher",
+  "nodes": [
+    {
+      "id": "ce0fcc21-61e2-470b-b22e-1460c873883b",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "07ff2e2f-f5f5-4a57-b0c6-42f1eda13057",
+      "name": "Validate Env Vars",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        440,
+        300
+      ],
+      "parameters": {
+        "functionCode": "const required = ['GSHEET_DOC_ID','APOLLO_API_KEY'];\nconst missing = required.filter(k => !$env[k] || !String($env[k]).trim());\nif (missing.length) throw new Error('[ENV] Missing: ' + missing.join(', '));\nreturn $input.all();"
+      }
+    },
+    {
+      "id": "de5c0226-60aa-4174-972e-83a72da68b20",
+      "name": "Read Master Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        640,
+        300
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1",
+          "name": "Google Sheets account"
+        }
+      },
+      "parameters": {
+        "operation": "getRows",
+        "documentId": {
+          "value": "={{ $env.GSHEET_DOC_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "value": "Master",
+          "mode": "name"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "0fb17679-48d2-4bd3-b531-3a46272d6a17",
+      "name": "Filter: Needs Enrichment",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        840,
+        300
+      ],
+      "parameters": {
+        "functionCode": "const MAX = parseInt($env.ENRICH_BATCH_SIZE || '25', 10);\nconst needs = $input.all().filter(i =>\n  i.json.enrichment_status !== 'enriched' &&\n  i.json.name && i.json.name.trim() &&\n  i.json.company && i.json.company.trim()\n);\nconst batch = needs.slice(0, MAX);\nconsole.log('[ENRICH] Unenriched: ' + needs.length + ' | Batch: ' + batch.length);\nif (!batch.length) return [];\nlet emailCount = 0;\nreturn batch.map(item => {\n  const reveal = parseFloat(item.json.icp_score) >= 4 && emailCount < 50;\n  if (reveal) emailCount++;\n  return { json: { ...item.json, _reveal_email: reveal } };\n});"
+      }
+    },
+    {
+      "id": "46042e34-4442-4812-b28f-604604438825",
+      "name": "Prepare Contact",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        300
+      ],
+      "parameters": {
+        "functionCode": "const c = $input.item.json;\nconst honorifics = new Set(['dr','mr','mrs','ms','prof','shri','smt','sir']);\nconst parts = (c.name||'').trim().split(/\\s+/)\n  .filter(p => !honorifics.has(p.toLowerCase().replace('.','').trim()));\nreturn [{ json: {\n  ...c,\n  _first_name: parts[0] || '',\n  _last_name:  parts.slice(1).join(' ') || ''\n} }];"
+      }
+    },
+    {
+      "id": "181ec450-56a2-4eb1-9ba9-577fd5486fe8",
+      "name": "Apollo: People Search",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1240,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apollo.io/v1/people/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Api-Key",
+              "value": "={{ $env.APOLLO_API_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"q_keywords\": {{ JSON.stringify($json.name) }},\n  \"organization_names\": [{{ JSON.stringify($json.company) }}],\n  \"reveal_personal_emails\": {{ $json._reveal_email ? true : false }},\n  \"page\": 1,\n  \"per_page\": 3\n}",
+        "options": {
+          "timeout": 15000
+        }
+      }
+    },
+    {
+      "id": "b1aa1466-f027-467a-985e-82582888b066",
+      "name": "Parse Search Result",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        300
+      ],
+      "parameters": {
+        "functionCode": "const resp = $input.item.json;\nconst people = resp.people || [];\nfunction band(n) {\n  if (!n) return ''; n = parseInt(n);\n  if (n<10) return '1-10'; if (n<50) return '11-50';\n  if (n<200) return '51-200'; if (n<500) return '201-500';\n  if (n<1000) return '501-1000'; if (n<5000) return '1001-5000';\n  return '5000+';\n}\nif (!people.length) {\n  return [{ json: { ...resp, _match_found: false, _match_method: 'none' } }];\n}\n// Pick best match by name similarity\nconst target = (resp.name || '').toLowerCase();\nlet best = people[0];\nfor (const p of people) {\n  const full = ((p.first_name||'')+' '+(p.last_name||'')).toLowerCase();\n  if (target.split(' ').some(w => w.length > 3 && full.includes(w))) { best = p; break; }\n}\nconst org = best.organization || {};\nconst email = best.email || (best.personal_emails||[])[0] || '';\nreturn [{ json: {\n  ...resp,\n  _enriched_linkedin: best.linkedin_url || '',\n  _enriched_email:    email,\n  _enriched_size:     band(org.estimated_num_employees),\n  _enriched_stage:    org.latest_funding_stage || '',\n  _match_found:       true,\n  _match_method:      'people_search'\n} }];"
+      }
+    },
+    {
+      "id": "d8f821ae-8180-4b4b-8987-233bed8fb475",
+      "name": "Merge & Score",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1640,
+        300
+      ],
+      "parameters": {
+        "functionCode": "const c = $input.item.json;\nconst SENIORITY_W = {'C-Suite':3,'VP/Director':2,'Manager/IC':1};\nconst INDUSTRY_W  = {'Fintech':2,'D2C/Ecomm':2,'SaaS/B2B':2,'VC/PE':1,'DeepTech/AI':1,'Edtech':1,'Mobility':1,'Government':0};\nconst SEN_KW = {\n  'C-Suite':['founder','co-founder','ceo','cto','coo','cfo','cpo','chief','chairman','managing director','president'],\n  'VP/Director':['vp ','vp,','vice president','director','head of','partner','managing partner','svp','evp'],\n  'Manager/IC':['manager','lead','engineer','analyst','associate','consultant']\n};\nconst IND_KW = {\n  'Fintech':['zerodha','razorpay','groww','phonepe','open financial','paytm','cred','neobank','acko','pine labs','juspay'],\n  'D2C/Ecomm':['mensa','snapdeal','nykaa','boat','plum','mamaearth','meesho','firstcry','licious'],\n  'SaaS/B2B':['inmobi','freshworks','zoho','chargebee','postman','browserstack','salesforce','infosys','wipro','kpmg','giggr','leadsquared','moengage'],\n  'VC/PE':['elevation capital','3one4','prosus','sequoia','tiger','blume','accel','lightspeed','matrix','antler','nexus','peak xv','carlyle','angellist'],\n  'DeepTech/AI':['neysa','nvidia','microsoft','isro','sarvam','mad street','krutrim','mphasis'],\n  'Edtech':['upgrad','byju','unacademy','eruditus','classplus','scaler','physics wallah'],\n  'Mobility':['ola','rapido','yulu','blusmart','zypp','spinny','dunzo'],\n  'Government':['government of india','g20','nasscom','ispirt','ministry']\n};\nfunction inferSeniority(t) {\n  t=(t||'').toLowerCase();\n  for(const[tier,kws]of Object.entries(SEN_KW)){if(kws.some(k=>t.includes(k)))return tier;}\n  return 'Manager/IC';\n}\nfunction inferIndustry(co,ti) {\n  const text=((co||'')+(ti||'')).toLowerCase();\n  for(const[ind,kws]of Object.entries(IND_KW)){if(kws.some(k=>text.includes(k)))return ind;}\n  return 'SaaS/B2B';\n}\nconst seniority = c.seniority_tier || inferSeniority(c.title);\nconst industry  = c.industry_vertical || inferIndustry(c.company, c.title);\nconst score = Math.min(5, Math.max(1, (SENIORITY_W[seniority]||1)+(INDUSTRY_W[industry]||0)));\nreturn [{ json: {\n  id:                c.id,\n  name:              c.name,\n  company:           c.company,\n  linkedin_url:      c._enriched_linkedin || c.linkedin_url || '',\n  email:             c._enriched_email    || c.email        || '',\n  company_size:      c._enriched_size     || c.company_size || '',\n  funding_stage:     c._enriched_stage    || c.funding_stage || '',\n  seniority_tier:    seniority,\n  industry_vertical: industry,\n  icp_score:         String(score),\n  enrichment_status: c._match_found ? 'enriched' : 'not_found'\n} }];"
+      }
+    },
+    {
+      "id": "4eee992a-0ffb-42f6-865a-c1cb9246f8ff",
+      "name": "Write Enrichment to Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        1840,
+        300
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1",
+          "name": "Google Sheets account"
+        }
+      },
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "value": "={{ $env.GSHEET_DOC_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "value": "Master",
+          "mode": "name"
+        },
+        "columnToMatchOn": "id",
+        "valueToMatchOn": "={{ $json.id }}",
+        "fieldsUi": {
+          "values": [
+            {
+              "column": "linkedin_url",
+              "fieldValue": "={{ $json.linkedin_url }}"
+            },
+            {
+              "column": "email",
+              "fieldValue": "={{ $json.email }}"
+            },
+            {
+              "column": "company_size",
+              "fieldValue": "={{ $json.company_size }}"
+            },
+            {
+              "column": "funding_stage",
+              "fieldValue": "={{ $json.funding_stage }}"
+            },
+            {
+              "column": "seniority_tier",
+              "fieldValue": "={{ $json.seniority_tier }}"
+            },
+            {
+              "column": "industry_vertical",
+              "fieldValue": "={{ $json.industry_vertical }}"
+            },
+            {
+              "column": "icp_score",
+              "fieldValue": "={{ $json.icp_score }}"
+            },
+            {
+              "column": "enrichment_status",
+              "fieldValue": "={{ $json.enrichment_status }}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "62742aa1-b857-4a77-8900-52faba9ccf5f",
+      "name": "Rate Limit (6s)",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        2040,
+        300
+      ],
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": 6,
+        "unit": "seconds"
+      }
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Validate Env Vars",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Env Vars": {
+      "main": [
+        [
+          {
+            "node": "Read Master Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Master Sheet": {
+      "main": [
+        [
+          {
+            "node": "Filter: Needs Enrichment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter: Needs Enrichment": {
+      "main": [
+        [
+          {
+            "node": "Prepare Contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Contact": {
+      "main": [
+        [
+          {
+            "node": "Apollo: People Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apollo: People Search": {
+      "main": [
+        [
+          {
+            "node": "Parse Search Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Search Result": {
+      "main": [
+        [
+          {
+            "node": "Merge & Score",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge & Score": {
+      "main": [
+        [
+          {
+            "node": "Write Enrichment to Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Enrichment to Sheet": {
+      "main": [
+        [
+          {
+            "node": "Rate Limit (6s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "versionId": "78338dd8-a65b-4979-833e-19e8b2c2e64e"
+}
